@@ -49,6 +49,88 @@ g.bind('IAO', IAO_ns)
 g.bind('iof-av', IOF_AV_ns)
 g.bind('iof-core', IOF_CORE_ns)
 
+# Hardcoded mapping from BFO numbers to labels (Classes and Object Properties)
+bfo_number_to_label = {
+    # Classes
+    BFO_ns.BFO_0000001: "entity",
+    BFO_ns.BFO_0000002: "continuant",
+    BFO_ns.BFO_0000003: "occurrent",
+    BFO_ns.BFO_0000004: "independent continuant",
+    BFO_ns.BFO_0000006: "spatial region",
+    BFO_ns.BFO_0000008: "temporal region",
+    BFO_ns.BFO_0000009: "two-dimensional spatial region",
+    BFO_ns.BFO_0000011: "spatiotemporal region",
+    BFO_ns.BFO_0000015: "process",
+    BFO_ns.BFO_0000016: "disposition",
+    BFO_ns.BFO_0000017: "realizable entity",
+    BFO_ns.BFO_0000018: "zero-dimensional spatial region",
+    BFO_ns.BFO_0000019: "quality",
+    BFO_ns.BFO_0000020: "specifically dependent continuant",
+    BFO_ns.BFO_0000023: "role",
+    BFO_ns.BFO_0000024: "fiat object part",
+    BFO_ns.BFO_0000026: "one-dimensional spatial region",
+    BFO_ns.BFO_0000027: "object aggregate",
+    BFO_ns.BFO_0000028: "three-dimensional spatial region",
+    BFO_ns.BFO_0000029: "site",
+    BFO_ns.BFO_0000030: "object",
+    BFO_ns.BFO_0000031: "generically dependent continuant",
+    BFO_ns.BFO_0000034: "function",
+    BFO_ns.BFO_0000035: "process boundary",
+    BFO_ns.BFO_0000038: "one-dimensional temporal region",
+    BFO_ns.BFO_0000040: "material entity",
+    BFO_ns.BFO_0000140: "continuant fiat boundary",
+    BFO_ns.BFO_0000141: "immaterial entity",
+    BFO_ns.BFO_0000142: "fiat line",
+    BFO_ns.BFO_0000145: "relational quality",
+    BFO_ns.BFO_0000146: "fiat surface",
+    BFO_ns.BFO_0000147: "fiat point",
+    BFO_ns.BFO_0000148: "zero-dimensional temporal region",
+    BFO_ns.BFO_0000182: "history",
+    BFO_ns.BFO_0000202: "temporal interval",
+    BFO_ns.BFO_0000203: "temporal instant",
+    # Object Properties
+    BFO_ns.BFO_0000054: "has realization",
+    BFO_ns.BFO_0000055: "realizes",
+    BFO_ns.BFO_0000056: "participates in",
+    BFO_ns.BFO_0000057: "has participant",
+    BFO_ns.BFO_0000058: "is concretized by",
+    BFO_ns.BFO_0000059: "concretizes",
+    BFO_ns.BFO_0000062: "preceded by",
+    BFO_ns.BFO_0000063: "precedes",
+    BFO_ns.BFO_0000066: "occurs in",
+    BFO_ns.BFO_0000084: "generically depends on",
+    BFO_ns.BFO_0000101: "is carrier of",
+    BFO_ns.BFO_0000108: "exists at",
+    BFO_ns.BFO_0000115: "has member part",
+    BFO_ns.BFO_0000117: "has occurrent part",
+    BFO_ns.BFO_0000121: "has temporal part",
+    BFO_ns.BFO_0000124: "location of",
+    BFO_ns.BFO_0000127: "material basis of",
+    BFO_ns.BFO_0000129: "member part of",
+    BFO_ns.BFO_0000132: "occurrent part of",
+    BFO_ns.BFO_0000139: "temporal part of",
+    BFO_ns.BFO_0000153: "temporally projects onto",
+    BFO_ns.BFO_0000171: "located in",
+    BFO_ns.BFO_0000176: "continuant part of",
+    BFO_ns.BFO_0000178: "has continuant part",
+    BFO_ns.BFO_0000183: "environs",
+    BFO_ns.BFO_0000184: "history of",
+    BFO_ns.BFO_0000185: "has history",
+    BFO_ns.BFO_0000194: "specifically depended on by",
+    BFO_ns.BFO_0000195: "specifically depends on",
+    BFO_ns.BFO_0000196: "bearer of",
+    BFO_ns.BFO_0000197: "inheres in",
+    BFO_ns.BFO_0000199: "occupies temporal region",
+    BFO_ns.BFO_0000200: "occupies spatiotemporal region",
+    BFO_ns.BFO_0000210: "occupies spatial region",
+    BFO_ns.BFO_0000216: "spatially projects onto",
+    BFO_ns.BFO_0000218: "has material basis",
+    BFO_ns.BFO_0000221: "first instant of",
+    BFO_ns.BFO_0000222: "has first instant",
+    BFO_ns.BFO_0000223: "last instant of",
+    BFO_ns.BFO_0000224: "has last instant",
+}
+
 # Function to strip language tags and quotes from literals
 def clean_literal(lit):
     if isinstance(lit, Literal):
@@ -105,14 +187,18 @@ object_properties = set(prop for prop in g.subjects(RDF.type, OWL.ObjectProperty
 # Function to serialize nodes (URIs or literals)
 def serialize_node(node, graph, namespace_manager, visited=None):
     if isinstance(node, URIRef):
-        # Try to get the label from the graph
-        labels = set()
-        for label in graph.objects(node, RDFS.label):
-            labels.add(clean_literal(label))
-        if labels:
-            return '; '.join(labels)  # Use all labels
+        # Check if node is in the hardcoded mapping
+        if node in bfo_number_to_label:
+            return bfo_number_to_label[node]
         else:
-            return node.n3(namespace_manager)
+            # Try to get the label from the graph
+            labels = set()
+            for label in graph.objects(node, RDFS.label):
+                labels.add(clean_literal(label))
+            if labels:
+                return '; '.join(labels)  # Use all labels
+            else:
+                return node.n3(namespace_manager)
     elif isinstance(node, Literal):
         return clean_literal(node)
     else:
@@ -146,7 +232,7 @@ def serialize_blank_node(node, graph, namespace_manager, visited=None):
             if isinstance(obj, BNode):
                 obj_str = serialize_blank_node(obj, graph, namespace_manager, visited)
             else:
-                obj_str = serialize_node(obj, graph, namespace_manager)
+                obj_str = serialize_node(obj, graph, namespace_manager, visited)
             components.append(f"{pred_str} {obj_str}")
         return '[ ' + ' ; '.join(components) + ' ]'
 
