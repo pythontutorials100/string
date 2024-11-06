@@ -1,7 +1,5 @@
-Use of Description Logics in Protégé:
-
-    Protégé, the ontology editor we use, is designed to work with Web Ontology Language (OWL), which is based on description logics—a subset of first-order logic.
-    When we model ontologies in Protégé, we are effectively employing description logics to define classes, properties, and their interrelations.
-
-The ontologies we develop using Protégé and based on BFO and CCO are encoded in OWL, which has semantics grounded in first-order logic.
-The reasoning tasks—such as consistency checking, classification, and inferencing—are performed within a logical framework that adheres to FOL semantics.
+RDFS (RDF Schema): Provides basic hierarchical reasoning using classes and properties.
+OWL 2 QL (Query Language): Optimized for efficient query answering over large datasets using relational database technologies.
+OWL 2 RL (Rule Language): Designed for rule-based reasoning using forward-chaining rule engines.
+OWL 2 EL (Expressive Language): Tailored for efficient reasoning over large ontologies with complex class hierarchies.
+User-Defined Rules: Allows the inclusion of custom inference rules to extend reasoning capabilities beyond the standard profiles.
