@@ -1,5 +1,3 @@
-RDFS (RDF Schema): Provides basic hierarchical reasoning using classes and properties.
-OWL 2 QL (Query Language): Optimized for efficient query answering over large datasets using relational database technologies.
-OWL 2 RL (Rule Language): Designed for rule-based reasoning using forward-chaining rule engines.
-OWL 2 EL (Expressive Language): Tailored for efficient reasoning over large ontologies with complex class hierarchies.
-User-Defined Rules: Allows the inclusion of custom inference rules to extend reasoning capabilities beyond the standard profiles.
+-Artificial Intelligence A Modern Approach 3'rd Edition by Russell & Norvig - Chapter 7 - 12 (Knowledge, Reasoning and Planning)
+-Introduction to Logic 3'rd Edition, Genesereth & Kao
+-Knowledge Representation and Reasoning by Brachman and Levesque
