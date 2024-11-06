@@ -1,1 +1,9 @@
+Combination of OWL Profiles Based on First-Order Logic:
 
+    The SL reasoning type is a combination of RDFS, OWL 2 QL, RL, and EL axioms, along with user-defined rules.
+    Each of these OWL profiles is founded on description logics, which are decidable fragments of first-order logic.
+        OWL 2 QL: Tailored for applications requiring efficient query answering over large datasets; corresponds to a fragment of FOL.
+        OWL 2 RL: Designed for scalable reasoning using rule-based technologies; aligns with certain Horn clauses in FOL.
+        OWL 2 EL: Suited for ontologies with large numbers of properties and classes; corresponds to another fragment of FOL.
+        RDFS: Provides basic vocabulary for RDF schemas; can be mapped to FOL expressions.
+    By combining these profiles, SL reasoning allows us to exploit the expressive power of multiple FOL-based subsets.
