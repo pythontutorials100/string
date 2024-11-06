@@ -1,9 +1,7 @@
-Combination of OWL Profiles Based on First-Order Logic:
+Use of Description Logics in Protégé:
 
-    The SL reasoning type is a combination of RDFS, OWL 2 QL, RL, and EL axioms, along with user-defined rules.
-    Each of these OWL profiles is founded on description logics, which are decidable fragments of first-order logic.
-        OWL 2 QL: Tailored for applications requiring efficient query answering over large datasets; corresponds to a fragment of FOL.
-        OWL 2 RL: Designed for scalable reasoning using rule-based technologies; aligns with certain Horn clauses in FOL.
-        OWL 2 EL: Suited for ontologies with large numbers of properties and classes; corresponds to another fragment of FOL.
-        RDFS: Provides basic vocabulary for RDF schemas; can be mapped to FOL expressions.
-    By combining these profiles, SL reasoning allows us to exploit the expressive power of multiple FOL-based subsets.
+    Protégé, the ontology editor we use, is designed to work with Web Ontology Language (OWL), which is based on description logics—a subset of first-order logic.
+    When we model ontologies in Protégé, we are effectively employing description logics to define classes, properties, and their interrelations.
+
+The ontologies we develop using Protégé and based on BFO and CCO are encoded in OWL, which has semantics grounded in first-order logic.
+The reasoning tasks—such as consistency checking, classification, and inferencing—are performed within a logical framework that adheres to FOL semantics.
