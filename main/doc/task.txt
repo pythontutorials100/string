@@ -1,0 +1,38 @@
+1,Training on Decision Support Question (DSQ) Process,,
+1.1,Prepare DSQ Training Materials,17,"Develop slides, examples, and reference documents."
+1.2,Conduct DSQ Training Sessions,5,Deliver training to relevant stakeholders (2–3 sessions).
+1.3,Follow-up Q&A and Documentation,3,"Address open questions, distribute final training artifacts."
+,,,
+,,,
+2,DSQ Workshops & Alignment,,
+2.1,Workshop Planning (Workshop #1 & #2),5,"Define objectives, agenda, participant list, and logistics."
+2.2,Conduct Workshop #1,3,Facilitate discussion to identify high‐level DSQs and desired outcomes.
+2.3,Conduct Workshop #2,3,"Refine DSQs, confirm alignment with business needs and data sources."
+2.4,Summaries & Alignment,8,"Summarize workshop outputs, refine DSQ list, and secure stakeholder sign‐off."
+2.5,DSQ Documentation,4,Finalize a concise DSQ document for use in ontology development.
+,,,
+,,,
+3,Training on Ontology Development Process,,
+3.1,Develop Ontology Training Materials,15,"Slides/demos covering OWL basics, ontology design patterns, tool setup, etc."
+3.2,Deliver Ontology Training Sessions,4,Conduct training sessions for the team.
+3.3,"Q&A, Follow-up, and Documentation",3,"Address open questions, finalize training guides, and distribute knowledge assets."
+,,,
+,,,
+4,Basic Ontology Classes & Relationships,,
+4.1,Requirements Alignment w/ DSQs & Enterprise Ontology,10,Map DSQ outcomes and existing Enterprise Ontology concepts to scope.
+4.2,Define Initial Classes,10,Establish key classes
+4.3,Define Relationships & Properties,10,Establish key relationships
+4.4,Documentation & Internal Review,5,Draft ontology documentation; review with SMEs and refine as needed.
+,,,
+,,,
+5,Initial Ontology Business Rules,,
+5.1,Gather & Prioritize Business Rules,10,"Identify key constraints, define logic for DSQ answers."
+5.2,Encode Rules in Ontology & Test,10,Implement rules in OWL/SWRL or via logic layer; test with sample data.
+5.3,Validate & Finalize,5,"Review rules with domain experts, iterate as needed."
+5.4,Document Final Rules & Next Steps,5,"Create a concise rulebook, define follow‐on or advanced rule expansions."
+,,,
+,,,
+6,Project Management & Buffer,,
+6.1,Coordination & Status Meetings,7,"Weekly check‐ins, schedule updates, and risk management."
+6.2,Administrative / Documentation,5,"Budget tracking, milestone documentation, deliverable sign‐off tracking."
+6.3,Contingency / Buffer,3,"Time reserved for unforeseen issues, rework, or additional stakeholder requests."
