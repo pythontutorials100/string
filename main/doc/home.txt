@@ -1,98 +1,39 @@
+Slide: Agenda
 
-Short Answer
-Competency questions (CQs) are central to a well-structured ontology or knowledge graph. They originate from the methodology of requirement gathering in ontology engineering, where CQs articulate the precise queries your ontology must be able to answer. Over time, multiple research groups (in academia and industry) have refined best practices for developing CQs, including systematic approaches and tooling support. Key references include the TOVE project (University of Toronto), METHONTOLOGY (Ontology Engineering Group at UPM), Ontology Development 101 (Stanford/Protégé), and the NeOn Methodology (EU-funded consortium).
-Below is an overview of the science, methodology, and resources surrounding competency questions.
-________________________________________
-1. Origin and Definition
-1.	TOVE (Toronto Virtual Enterprise) Project
-o	Often credited with popularizing the term “competency questions.”
-o	Reference: M. Gruninger and M. S. Fox, Methodology for the Design and Evaluation of Ontologies, in the Proceedings of the Workshop on Basic Ontological Issues in Knowledge Sharing (IJCAI), 1995.
-2.	Key Purpose of Competency Questions
-o	Drive the scope of the ontology: “We need to answer X, Y, Z questions—so our ontology must include A, B, C concepts and relationships.”
-o	Provide testable requirements: If the ontology can answer all CQs, it meets the essential user needs.
-________________________________________
-2. Methodologies & Best Practices
-2.1 METHONTOLOGY (Ontology Engineering Group, UPM)
-•	Overview: A pioneering methodology that details the ontology development lifecycle: specification, conceptualization, integration, implementation, evaluation, maintenance.
-•	Competency Questions: In the “Specification” phase, you gather requirements from domain experts, use cases, etc., and translate them into CQs.
-•	Resources: 
-o	Fernández-López, M., Gómez-Pérez, A., & Juristo, N. (1997). METHONTOLOGY: From Ontological Art Toward Ontological Engineering. AAAI Technical Report.
-o	The Ontology Engineering Group (OEG) at UPM provides research papers, tutorials, and tools.
-2.2 Ontology Development 101 (Stanford/Protégé Group)
-•	Authorship: Natalya F. Noy & Deborah L. McGuinness (Stanford University).
-•	Focus: A practical guide for beginners building their first ontology.
-•	Competency Questions Section: Emphasizes identifying core questions the ontology must handle and verifying your conceptual model meets those needs.
-•	Resource: “Ontology Development 101” (PDF)
-2.3 NeOn Methodology (EU-funded Project)
-•	Scope: A more contemporary, modular approach to ontology engineering that addresses distributed teams, diverse data, and dynamic requirements.
-•	CQ Integration: Encourages “scenario-based” requirement gathering, which includes deriving CQs from user stories.
-•	Resource: NeOn Project Site and various published deliverables.
-________________________________________
-3. How to Develop Competency Questions
-While there’s no single “silver bullet,” the general process for generating CQs is consistent across methodologies:
-1.	Identify Stakeholders & Use Cases
-o	Gather domain experts, data consumers, and end-users.
-o	Ask: “What problems do you face, and what information do you need to solve them?”
-2.	Translate User Needs into CQs
-o	For each need, formulate a question that precisely states what you want to retrieve or infer from the ontology/knowledge graph.
-o	Example: “Which employees have certifications that expire within 90 days?”
-3.	Refine & Prioritize
-o	Not all questions are equally critical or feasible.
-o	Refine wording so they are concise, unambiguous, and testable.
-4.	Check Feasibility & Coverage
-o	Validate that for each CQ, you have (or can realistically acquire) the needed data.
-o	If the data is incomplete or unavailable, decide on expansions or data integration approaches.
-5.	Iterate
-o	As the ontology evolves, revisit CQs to verify they still match business needs.
-o	Add new questions as new use cases or data sources emerge.
-________________________________________
-4. Evaluating Ontology Against Competency Questions
-Why Evaluate?
-•	CQs form the basis of acceptance criteria: if your ontology can answer them (e.g., via SPARQL queries or graph queries), you know you have the right classes, properties, relationships, and constraints.
-Tools & Techniques
-•	Reasoners (for OWL ontologies) to check if you can infer the necessary facts.
-•	SPARQL queries (in RDF-based systems) or property graph queries (Cypher in Neo4j, Gremlin, etc.) to directly test the retrieval of answers.
-•	ShEx, SHACL: For shape/constraint validation—can we structure data in a way that CQs can be answered?
-________________________________________
-5. Literature & Academic Resources
-1.	Gruninger & Fox (TOVE Project)
-o	Methodology for the Design and Evaluation of Ontologies (1995).
-o	Classic reference for using competency questions as the foundation of ontology requirements.
-2.	Uschold & King
-o	Towards a Methodology for Building Ontologies (1995) in Workshop on Basic Ontological Issues in Knowledge Sharing.
-o	Early and influential in formalizing an ontology-building process.
-3.	Noy & McGuinness
-o	Ontology Development 101: A Guide to Creating Your First Ontology (2001).
-o	Clear, step-by-step how-to that includes a lightweight approach to CQs.
-4.	Guarino, Oberle, Staab
-o	What Is an Ontology? in Handbook on Ontologies (2009).
-o	Covers more foundational aspects but references the role of competency questions in capturing requirements.
-5.	METHONTOLOGY Publications
-o	Many academic papers from the Ontology Engineering Group (UPM) detail how to incorporate CQs at various lifecycle stages.
-________________________________________
-6. Industry & Open-Source Resources
-1.	Protégé (Stanford)
-o	Widely used open-source ontology editor. While it doesn’t enforce CQ generation, its community wiki contains best practices and examples where CQs are central.
-2.	NCBO BioPortal (Stanford)
-o	A repository of biomedical ontologies, some of which include explicit CQs or domain-specific scenarios in their documentation.
-3.	Enterprise Knowledge Graph Workshops
-o	Large organizations (e.g., IBM, Oracle, Microsoft) often run workshops that discuss ways to gather user requirements, including a focus on CQs.
-o	Check corporate whitepapers on “knowledge graph best practices” or “data governance with ontologies.”
-4.	Academic & Industry Conferences
-o	Conferences like International Semantic Web Conference (ISWC), European Semantic Web Conference (ESWC), Ontology Summit, and Knowledge Graph Conference (KGC) often feature talks or workshops on CQ-driven ontology design.
-________________________________________
-7. Practical Tips & Summary
-1.	Start “Shallow” & Iterate
-o	Begin with high-level, must-answer questions. Later, refine or expand them.
-2.	Focus on Real Use Cases
-o	Avoid purely theoretical or “nice to have” questions. Stakeholders should genuinely need the answers.
-3.	Be Specific
-o	“Which employees need training soon?” is vague. “Which employees have a mandatory compliance training due in <90 days?” is more concrete.
-4.	Document Everything
-o	Keep a simple list or table: each CQ, justification (why it matters), required domain concepts/relations, and the expected format of the answer.
-5.	Test Early & Often
-o	As soon as you have a partial ontology, try to run queries (even if data is incomplete). Early tests reveal modeling gaps or data integration issues.
-________________________________________
-Key Takeaway
-There is a well-established “science” and methodology behind competency questions, grounded in both academic research (e.g., TOVE, METHONTOLOGY) and industry practice (through workshops and guides from companies like IBM, Oracle, and the Stanford Protégé community). By systematically defining and evaluating your ontology against competency questions, you ensure it remains both fit-for-purpose and measurably aligned with real-world requirements.
+    Welcome & Team Introduction
+        Who we are (Your Team)
+        Our role in the organization
 
+    Example Projects
+        Brief highlights of relevant projects your company worked on
+        Context: Why these projects matter
+
+    Introduction to Ontologies & Knowledge Graphs
+        Definitions: What are they?
+        Why do we use them? (Value proposition)
+
+    High-Level Process of Developing an Ontology
+        Overview of main steps (from concept to implementation)
+
+    Competency Questions
+        What they are and why they matter
+        Examples in an engineering context
+
+    Q&A / Next Steps
+        Quick preview of deeper dive in the next session
+
+Slide: Today’s Focus
+
+    Bridge Knowledge Gaps: Introduce ontology and knowledge graph concepts 
+    Highlight Real-World Relevance: Show how these concepts drive efficiency and insights in projects
+    Engage with Foundational Skills: Begin understanding competency questions to shape ontology design
+
+Slide: Outcomes
+
+By the end of this session, you will be able to:
+
+    Identify the purpose and value of ontologies and knowledge graphs in an engineering context.
+    Recognize how they can be applied to real-life scenarios 
+    Understand the high-level steps of developing an ontology (from initial scoping to implementation).
+    Explain the role of competency questions in guiding ontology structure and scope.
+    Prepare to formulate relevant competency questions for your own engineering projects in the next session.
