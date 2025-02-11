@@ -1,39 +1,23 @@
-Slide: Agenda
+Reflex-Based Models
 
-    Welcome & Team Introduction
-        Who we are (Your Team)
-        Our role in the organization
+    Used in machine learning, deep learning, and large language models (LLMs) where inference is a fixed computation with no reasoning or backtracking.
+    Applications include image recognition (CNNs), speech-to-text, object detection, and text generation (GPT, BERT, LLaMA, PaLM).
+    AI systems operate using feed-forward computations, meaning they take input and produce output without considering alternative possibilities or reasoning steps.
 
-    Example Projects
-        Brief highlights of relevant projects your company worked on
-        Context: Why these projects matter
+State-Based Models
 
-    Introduction to Ontologies & Knowledge Graphs
-        Definitions: What are they?
-        Why do we use them? (Value proposition)
+    Used in search algorithms, Markov Decision Processes (MDPs), and game-playing AI.
+    Applications include *route finding (A search, Dijkstra’s algorithm), reinforcement learning (Q-learning, deep Q-networks), and game AI (chess, Go, AlphaGo, self-driving cars)**.
+    AI systems think in terms of states, actions, and costs to make decisions and find optimal solutions through exploration and exploitation.
 
-    High-Level Process of Developing an Ontology
-        Overview of main steps (from concept to implementation)
+Variable-Based Models
 
-    Competency Questions
-        What they are and why they matter
-        Examples in an engineering context
+    Used in Constraint Satisfaction Problems (CSPs) and Bayesian networks to model uncertain relationships between variables.
+    Common in scheduling (e.g., airline scheduling, exam timetables), tracking (e.g., Kalman filters, Hidden Markov Models), and probabilistic reasoning (e.g., medical diagnosis AI, fraud detection).
+    AI models use variables and factors to represent dependencies and make inferences based on observed data.
 
-    Q&A / Next Steps
-        Quick preview of deeper dive in the next session
+Logic-Based Models
 
-Slide: Today’s Focus
-
-    Bridge Knowledge Gaps: Introduce ontology and knowledge graph concepts 
-    Highlight Real-World Relevance: Show how these concepts drive efficiency and insights in projects
-    Engage with Foundational Skills: Begin understanding competency questions to shape ontology design
-
-Slide: Outcomes
-
-By the end of this session, you will be able to:
-
-    Identify the purpose and value of ontologies and knowledge graphs in an engineering context.
-    Recognize how they can be applied to real-life scenarios 
-    Understand the high-level steps of developing an ontology (from initial scoping to implementation).
-    Explain the role of competency questions in guiding ontology structure and scope.
-    Prepare to formulate relevant competency questions for your own engineering projects in the next session.
+    Based on propositional logic, first-order logic, and knowledge representation, where AI derives conclusions using formal reasoning.
+    Used in automated theorem proving, formal verification (e.g., software correctness proofs), knowledge graphs (e.g., Semantic Web, ontologies), and expert systems.
+    AI systems use logical formulas and inference rules to perform symbolic reasoning and structured decision-making.
