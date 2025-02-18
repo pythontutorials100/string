@@ -1,1 +1,159 @@
+**Proposed Training Outline**
 
+Below is a concise outline for a training session on using competency questions to guide ontology design and evaluation, inspired by the TOVE methodology. Each major section is kept “tight” (concise and direct); however, it can be elaborated with domain-specific examples and deeper discussion as needed—especially helpful for engineers who may need additional clarity on abstract concepts.
+
+---
+
+### 1. **Introduction & Motivation**
+1. **Why Competency Questions?**  
+   - Transition from data repositories to sophisticated decision-support systems.  
+   - Ontology as a formal description of entities, relations, constraints—crucial for inference and “common-sense” reasoning.
+2. **TOVE Background**  
+   - “Second-generation knowledge engineering.”  
+   - Focus on engineering ontologies (rather than rules extraction alone).  
+   - Competency questions define what an ontology must be able to answer.
+
+**Key Takeaway:** Competency questions anchor your ontology in real, practical use-cases—especially important in aerospace engineering contexts using BFO and Common Core Ontology.
+
+---
+
+### 2. **Motivating Scenarios**
+1. **Role of Real-World Scenarios**  
+   - Story-like vignettes (e.g., manufacturing bottlenecks, scheduling under resource constraints) reveal ontology gaps.  
+   - Provide an **informal** sense of the needed entities and relationships.
+2. **Scenario to Proposed Ontology**  
+   - Justify new ontological terms (classes, relations, attributes) by showing how they solve scenario-based problems.  
+   - Compare new proposals to existing ontologies (BFO, CCO) to ensure synergy.
+
+**Key Takeaway:** Always link each proposed ontology extension or new term to a real scenario that demonstrates its necessity.
+
+---
+
+### 3. **From Scenario to Informal Competency Questions**
+1. **Definition & Purpose**  
+   - **Informal competency questions** are direct “natural language” queries the ontology should answer.  
+   - They serve as initial **requirements** for ontology design.
+2. **Characteristics**  
+   - Stratified questions: from simple lookups to deeper inferences.  
+   - Ensures that modeling efforts aren’t wasted on superficial or irrelevant details.
+3. **Examples** (adapted from TOVE)  
+   - *Activity Ontology*: “What sequence of activities must be done to achieve a goal?”  
+   - *Organization Ontology*: “Is an agent allowed to perform an activity in a given situation?”
+
+**Key Takeaway:** Keep these questions clearly documented as they shape the logic, axioms, and structure of your ontology.
+
+---
+
+### 4. **Specification in First-Order Logic (FOL)—Terminology**
+1. **Why FOL?**  
+   - Formally capture domain objects, relations, and constraints.  
+   - Lends itself to rigorous validation and inference.
+2. **Building the Ontology Language**  
+   - Identify domain sorts (e.g., actions, resources).  
+   - Define predicates for attributes and n-ary relations for interactions among entities.
+3. **Situation Calculus (Illustrative Approach)**  
+   - *Situations* as possible “snapshots” of the world.  
+   - *Actions* move the system from one situation to another.  
+   - *Fluents* represent properties that can change.
+
+**Key Takeaway:** The ontology’s vocabulary (terms, predicates, functions) must be sufficient to restate and eventually answer the informal competency questions.
+
+---
+
+### 5. **Formal Competency Questions**
+1. **From Informal to Formal**  
+   - Express each informal question as an entailment or consistency query in FOL.  
+   - For example: “Does *Q* hold in situation *S* given the axioms *T*?”
+2. **Examples**  
+   - *Temporal Projection*: \(\Sigma_{Do}(A, S_0, S_1) \cup T_{\text{ontology}} \models Q(S_1)\).  
+   - *Consistency Checking*: \(\Sigma_{Do}(A, S_0, S_1) \cup T_{\text{ontology}} \not\models \neg Q(S_1)\) (i.e., \(Q(S_1)\) is consistent).
+3. **Discriminating Between Ontologies**  
+   - Two ontologies differ if they can (or cannot) answer a certain set of competency questions.  
+   - This is crucial when comparing alternative design proposals.
+
+**Key Takeaway:** Converting questions into a formal inference framework guides the ontology’s actual logical commitments—and reveals missing axioms or terms.
+
+---
+
+### 6. **Specification in FOL—Axioms**
+1. **Defining Semantics**  
+   - Axioms encode definitions and constraints for the objects and relations.  
+   - Not just naming entities; must specify their meaning in logical form.
+2. **Iterative Development**  
+   - Axioms are refined until they can represent and solve the formal competency questions.  
+   - Each axiom should be “traceable” to at least one competency question it helps answer.
+3. **Frame Problem & Causality (as an Example)**  
+   - Successor state axioms define how fluents persist or change after an action.  
+   - The “actual” line of situations ensures we can handle hypothetical vs. real-world branches.
+
+**Key Takeaway:** Axioms are the heart of any ontology. They must be carefully crafted so that the system can infer exactly what is needed for the competency questions.
+
+---
+
+### 7. **Completeness Theorems & Evaluation**
+1. **What is a Completeness Theorem?**  
+   - Shows that the axioms + definitions suffice to answer the competency questions *correctly* under specified assumptions.  
+   - If you can prove a completeness theorem, you have strong evidence your ontology “covers” the needed domain inferences.
+2. **Types of Theorems**  
+   - Equivalence: “\(T_{ontology}\cup T_{ground} \models \Phi \iff T_{ontology}\cup T_{ground} \models Q\).”  
+   - Consistency: “\(T_{ontology}\cup T_{ground}\cup \Phi\) has a model \(\iff\) a certain answer holds.”  
+   - Predicates: All models of \(T_{ontology}\) agree on the extension of some domain predicate.  
+3. **Implication for Ontology Maintenance**  
+   - If you extend the ontology, you must revisit these proofs (or test cases) to ensure no break in competency.
+
+**Key Takeaway:** Proving or at least systematically testing completeness theorems ensures the ontology is not just a “list of terms” but a fully coherent system aligned with your use-cases.
+
+---
+
+### 8. **Putting It All Together**
+1. **Practical Steps for Building Ontology**  
+   1. Collect *motivating scenarios* from domain experts.  
+   2. Draft *informal competency questions*.  
+   3. Define *terminology* in FOL (sorts, predicates).  
+   4. State *formal competency questions* as entailment/consistency queries.  
+   5. Write *axioms* and constraints iteratively.  
+   6. Test *completeness* by seeing if the ontology can (or cannot) answer these queries.
+2. **Alignment with BFO & Common Core Ontology**  
+   - Use BFO’s upper-level structure for broad philosophical categories (e.g., “Process,” “Object,” “Role”).  
+   - Common Core Ontology modules to handle standard domains (e.g., “Agent,” “Organization,” “Activity”).  
+   - Ensure new or extended axioms remain consistent with BFO/CCO guidelines.
+3. **Examples / Demos**  
+   - Show a minimal example (like a simplified manufacturing-scheduling scenario).  
+   - Walk through each step from scenario → competency question → formal specification → demonstration of answer in a reasoner.
+
+---
+
+### 9. **Conclusion & Next Steps**
+1. **Review**  
+   - Competency questions drive clarity and ensure the ontology is not merely conceptual but *operational*.  
+   - Formalization in FOL builds a robust basis for computational reasoning.  
+   - Completeness theorems (or thorough testing) safeguard quality.
+2. **Beyond Basics**  
+   - Explore advanced reasoning (temporal logics, probabilistic extensions, etc.).  
+   - Discuss real deployment challenges: performance, tooling, triple stores, graph databases.
+3. **Final Reminders**  
+   - Always tie new ontology concepts or modules back to the overarching mission.  
+   - Revisit competency questions over time as processes evolve and new requirements emerge.
+
+---
+
+## Suggested Session Flow
+
+1. **Opening (5–10 min)**  
+   - Quick introduction to objectives and significance of competency questions.
+2. **Core Content (30–45 min)**  
+   - Motivating Scenarios, Informal to Formal Questions, FOL Terminology, Key Axioms.  
+   - Incorporate real aerospace/manufacturing examples.
+3. **Interactive Demonstration (15–20 min)**  
+   - Show a short example in a reasoner or an existing knowledge graph platform.  
+   - Walk through how an ontology can answer a sample competency question.
+4. **Discussion & Q&A (15 min)**  
+   - Encourage participants to raise domain-specific scenarios.  
+   - Clarify any points about BFO/CCO alignment.
+5. **Hands-On / Workshop (Optional extension)**  
+   - If time and resources allow, facilitate a session where participants define or refine competency questions for their own aerospace domain scenario.
+
+---
+
+### Final Note
+Keep the training interactive and example-driven, especially given the high-level academic background of participants (MIT, Stanford, Harvard, etc.). They will appreciate rigorous formalisms—while also valuing concrete industry-relevant illustrations.
