@@ -1,195 +1,149 @@
-Below is a streamlined set of training materials on Decision Support Questions (DSQs). The language is deliberately concise and direct. Where additional clarification might be needed, examples are provided. Use this as a reference when building ontologies in the context of Basic Formal Ontology (BFO) and Common Core Ontology (CCO).
+Below is a concise, high-quality set of slide-ready content focused on the DSQ Template columns. It ties in market segmentation/beachhead concepts under Stakeholders, highlights key elements for each column, and explains the importance of genus–species definitions in ontology. You can adapt or expand these points to fit your specific presentation style.
 
 ---
 
-## 1. What Is a Decision Support Question (DSQ)?
+## Slide: DSQ Template – Overview
+**Columns:**  
+1. **# (Identifier)**  
+2. **Stakeholders**  
+3. **Objectives**  
+4. **Competency**  
+5. **Decision**  
+6. **Decision Support Question (DSQ)**  
+7. **Potential Classes**  
+8. **Potential Data Sources**  
+9. **Class Categorization**  
+10. **Genus–Species Definition**  
+11. **Object Properties**
 
-A Decision Support Question (DSQ) is a question expressed in natural language that your ontology must be able to “answer.” DSQs guide what content (classes, relationships, data attributes) should be in the ontology. They define scope by capturing:
-
-- **Which entities** must be represented (e.g., engines, aircraft, airports).  
-- **How those entities** relate to each other (e.g., “engine is installed on aircraft”).  
-- **Which data** is needed to connect everything meaningfully (e.g., flight logs, maintenance records).  
-
-Think of DSQs as **requirements**. They ensure you develop an ontology that can support real-world decisions and insights.
-
----
-
-## 2. Why DSQs Matter
-
-1. **Scope & Clarity**  
-   DSQs set boundaries on what your ontology must cover. If a DSQ must address “Which aircraft have had unscheduled maintenance in the last quarter?” you know you need classes for ‘Aircraft,’ ‘Maintenance Events,’ and relevant time intervals.
-
-2. **Structure & Relationships**  
-   DSQs identify the logical relationships you’ll need. If a DSQ asks, “Do performance issues correlate with certain airports?” you must model “Performance Issue,” “Airport,” and a link between them (e.g., occurs_at, or correlates_with).
-
-3. **Data Requirements**  
-   DSQs highlight which data sources you’ll rely on (e.g., flight data, engine performance metrics, weather data). If the data can’t be accessed or doesn’t exist, you need to either acquire it or adjust the DSQ.
+These columns provide a structured way to capture each DSQ and the ontology requirements it implies.
 
 ---
 
-## 3. DSQ Archetypes
+## Slide: # (Identifier)
+- A simple numeric or alphanumeric label for easy reference.  
+- Helps you track and manage multiple DSQs.
 
-You will commonly see three types of DSQs:
-
-1. **Accounting for Objects**  
-   - *Example*: “Which aircraft and jet engines make up my fleet?”  
-   - Focuses on inventory: lists or counts of things in your domain.
-
-2. **Isolating Problems**  
-   - *Example*: “Which aircraft are experiencing performance issues?”  
-   - Identifies entities or events that deviate from desired operational standards.
-
-3. **Correlating Problems With Other Factors**  
-   - *Example*: “Do engine performance issues correlate to specific airports or flight paths?”  
-   - Searches for patterns or associations between a known issue and potential causes or conditions.
-
-Some DSQs may be too broad (“How can I get problems fixed?”) and do not directly translate into ontology content. Always refine DSQs to ensure they specify the domain objects and relationships you need.
+**Example**  
+- DSQ-01, DSQ-02, DSQ-03, etc.
 
 ---
 
-## 4. Developing High-Quality DSQs
+## Slide: Stakeholders
+- Identifies the **primary users** or beneficiaries of the DSQ.  
+- Use **market segmentation** steps (from *Disciplined Entrepreneurship*) to target your **beachhead** (i.e., the segment most likely to yield maximum value/impact).
 
-Follow these steps to create DSQs that directly inform ontology content:
+**Three Steps to Identify Your Beachhead Stakeholder**  
+1. **Brainstorm**: List all potential users (maintenance crews, airlines, suppliers, regulators).  
+2. **Narrow Down**: Filter by highest urgency, willingness to adopt, or greatest ROI.  
+3. **Primary Research**: Validate with real-world feedback to confirm the most promising stakeholder group (the “beachhead”).
 
-### Step 1: Identify Your Goal  
-- **What is your high-level outcome?**  
-  - *Example*: “The ontology should enable quick identification of engine performance issues within a fleet.”
-
-### Step 2: Isolate the Decision  
-- **What single decision must be supported by this ontology?**  
-  - *Example*: “Decide which engines require unscheduled maintenance.”
-
-### Step 3: Formulate DSQs  
-- Each DSQ addresses specific information you need to make that decision.
-
-#### 3a: Topic  
-- Be explicit about what you want: a list, a count, a correlation.  
-  - *Example*: “Which aircraft are currently grounded due to performance issues?”
-
-#### 3b: Data  
-- Ensure the data exists, is accessible, and is in a usable form.  
-  - *Example*: If you need flight history, confirm you have flight logs and permission to use them.
-
-#### 3c: Time  
-- Specify whether you are looking at a point in time, a range, or recurring intervals.  
-  - *Example*: “Which engines have required maintenance in the past quarter?”
-
-#### 3d: Grouping  
-- Do you need the data grouped or filtered by certain criteria (location, aircraft type, etc.)?  
-  - *Example*: “By airline ID and by fiscal quarter.”
-
-#### 3e: Ambiguity  
-- Avoid vague terms (“lots,” “some,” “good”). Use precise or quantitative definitions.  
-  - *Example*: Instead of “good performance,” define “engine vibrations below threshold X.”
+**Example**  
+- *Beachhead Stakeholder:* Maintenance supervisors who need real-time engine health analytics.
 
 ---
 
-## 5. DSQ Template
+## Slide: Objectives
+- States **why** the DSQ is important to the stakeholder.  
+- Clarifies the **business or operational goals** behind the question.
 
-Below is a recommended template to capture each DSQ. The greyed-out areas are for guidance; the unshaded fields are what you fill in for your own use case.
-
-1. **Goal**  
-   - *Sample*: “The ontology must enable queries to identify engine performance issues.”
-
-2. **Decision**  
-   - *Sample*: “Determine whether to ground an aircraft for further inspection.”
-
-3. **DSQs**  
-   - **3a. Topic**  
-     - *Example DSQ*: “Which engines have reported higher-than-normal vibration levels?”  
-   - **3b. Data**  
-     - *Example Source*: Vibration sensor logs, flight data, maintenance records.  
-   - **3c. Time**  
-     - *Example Interval*: “Over the last 30 days.”  
-   - **3d. Grouping**  
-     - *Example Filter*: “By airline, by engine model.”  
-   - **3e. Ambiguity**  
-     - Quantitative threshold for ‘higher-than-normal vibration.’
+**Example**  
+- Reduce unscheduled engine maintenance by 30% over the next year.  
+- Improve on-time performance of flights.
 
 ---
 
-## 6. Sample DSQs and Potential Ontology Content
+## Slide: Competency
+- Outlines the **capabilities** or skills required to address the DSQ effectively.  
+- May include data analysis expertise, domain knowledge (e.g., aeronautics, supply chain), or regulatory familiarity.
 
-**DSQ1**  
-- *Question*: Which aircraft, and jet engines, make up my fleet?  
-- *Data Sources*: Aircraft data, engine data, fleet data.  
-- *Ontology Classes*: Fleet, Aircraft, Jet Engine.
-
-**DSQ2**  
-- *Question*: Where are the aircraft and engines operating?  
-- *Data Sources*: Aircraft data, engine data, operational data.  
-- *Ontology Classes*: Aircraft, Jet Engine, Geospatial Location, Airport, Flight Path.
-
-**DSQ3**  
-- *Question*: Who is operating or maintaining the engines in the fleet?  
-- *Data Sources*: Airline data, crew data, maintenance data.  
-- *Ontology Classes*: Airline, Flight Crew, Maintenance Crew.
-
-**DSQ4**  
-- *Question*: Which aircraft or engines are experiencing performance issues?  
-- *Data Sources*: Performance logs, event data.  
-- *Ontology Classes*: Aircraft, Jet Engine, Performance Event.
-
-**DSQ5**  
-- *Question*: What performance issue is most prevalent?  
-- *Data Sources*: Performance event data.  
-- *Ontology Classes*: Performance Event, Frequency.
-
-**DSQ6**  
-- *Question*: Which engines have had unscheduled maintenance in the last quarter?  
-- *Data Sources*: Maintenance logs.  
-- *Ontology Classes*: Maintenance Event, Time Interval.
-
-**DSQ7**  
-- *Question*: Do engine performance issues correlate to specific operational areas, airports, or flight paths?  
-- *Data Sources*: Operational logs, airport data, geospatial data.  
-- *Ontology Classes*: Performance Event, Airport, Flight Path, Airspace.
-
-**DSQ8**  
-- *Question*: Do engine performance issues correlate to events such as maintenance, weather, or pollution?  
-- *Data Sources*: Maintenance records, weather data, particulate data.  
-- *Ontology Classes*: Maintenance Event, Weather Event, Pollution, Particulate Matter.
-
-**DSQ9**  
-- *Question*: Do engine performance issues correlate with how the aircraft are being operated?  
-- *Data Sources*: Flight data, engine performance data, operational logs.  
-- *Ontology Classes*: Performance Event, Flight Profile, Flight Segment, Temporal Interval.
+**Example**  
+- Domain knowledge in engine performance metrics.  
+- Competency in data integration from multiple sensors.
 
 ---
 
-## 7. DSQs That May Not Translate Directly
+## Slide: Decision
+- Pinpoints the **exact choice** that the DSQ will inform.  
+- Often a yes/no or selection from multiple options.
 
-Certain DSQs are too broad or lack specific domain objects:
-
-- “How can I get problems fixed?”  
-  - Vague: Does not identify the exact type of problem or the entities involved.
-
-- “Considering three courses of action, which one will yield the best result?”  
-  - Requires data from future experiments or external sources not yet represented in the ontology.
-
-When you encounter such DSQs, refine them to ensure they explicitly mention the domain entities and relationships you can model.
+**Example**  
+- *Decision:* Determine whether to ground specific aircraft for inspection, or continue operation.  
+- *Decision:* Identify which engines to prioritize for maintenance budget.
 
 ---
 
-## 8. Key Takeaways
+## Slide: Decision Support Question (DSQ)
+- **The question** that must be answerable via the ontology.  
+- Should be **specific**, **measurable**, and **directly relevant** to the decision.
 
-1. **DSQs Drive Ontology Content**  
-   Craft questions around the entities, relationships, and data that must exist in your ontology.
-
-2. **Be Specific and Measurable**  
-   Use precise language and clearly define parameters (time frames, thresholds, quantitative values).
-
-3. **Correlate to Known Data Sources**  
-   If you can’t find or access the data, your DSQ may need revision or additional support.
-
-4. **Use DSQ Archetypes**  
-   They help shape how you classify and relate domain objects (inventory, problem, correlation).
-
-5. **Refine, Refine, Refine**  
-   Start with a broad question, then narrow it until it translates cleanly into classes, relations, and attributes in the ontology.
+**Example**  
+- “Which engines in the fleet have exceeded vibration thresholds in the last 30 days?”
 
 ---
 
-**End of Training Content**
+## Slide: Potential Classes
+- **Ontology entities** you might need to represent in order to answer the DSQ.  
+- Classes stem from domain objects, events, or conceptual groupings.
 
-Feel free to adapt this structure to your specific domain. If a concept isn’t clear, illustrate it with a concrete example (e.g., a particular engine type, a specific maintenance event, or a known performance threshold). By following these guidelines, you ensure your ontology addresses real-world decision-making needs in the aerospace context.
+**Example**  
+- *Engine*, *Aircraft*, *Fleet*, *Maintenance Event*, *Performance Issue*.
+
+---
+
+## Slide: Potential Data Sources
+- **Where to get the data** needed to instantiate the classes and relationships.  
+- Data sources must be **accessible**, **reliable**, and **authorized**.
+
+**Example**  
+- Flight logs, maintenance records, sensor data, weather databases.  
+- OEM (Original Equipment Manufacturer) component metadata.
+
+---
+
+## Slide: Class Categorization
+- High-level grouping of classes (e.g., BFO’s **Continuant** vs. **Occurrent**, or CCO’s classification).  
+- Helps with **consistent modeling** and aligning with upper-level ontologies.
+
+**Example**  
+- **Engine** (Material Entity, a Continuant).  
+- **Flight** (Process, an Occurrent).
+
+---
+
+## Slide: Genus–Species Definition
+- **Core principle** in ontology: define a class by its **genus** (broader category) and the **differentia** (distinguishing features).  
+- Ensures **logical consistency** and clear placement of each class in the hierarchy.
+
+**Importance**  
+1. **Clarity**: Avoids overlapping or ambiguous definitions.  
+2. **Consistency**: Aligns each class with a broader ontology (BFO, CCO).  
+3. **Extensibility**: Makes it easier to add new subclasses or related concepts later.
+
+**Example**  
+- *Jet Engine* = **Engine** (genus) that **produces thrust by expelling hot exhaust gases** (species/differentia).  
+- *Engine* is the broader concept; the specific mechanism of thrust (jet propulsion) distinguishes it from other Engine types (like piston engines).
+
+---
+
+## Slide: Object Properties
+- **Relationships** between classes (e.g., *isInstalledOn*, *isOperatedBy*, *hasMaintenanceEvent*).  
+- Define **how** entities interact or connect, crucial for answering DSQs.
+
+**Example**  
+- `JetEngine isInstalledOn Aircraft`.  
+- `MaintenanceCrew performs MaintenanceEvent`.  
+- `PerformanceEvent hasTimeInterval TimeInterval`.
+
+---
+
+## Putting It All Together
+1. **Identify Stakeholders** using market segmentation to find your beachhead.  
+2. **Clarify Objectives & Competencies** for solving their specific problems.  
+3. **Define the Decision & DSQ** tightly so the ontology can answer it.  
+4. **List Potential Classes & Data Sources** needed to operationalize the DSQ.  
+5. **Categorize Classes** under the correct top-level ontologies (BFO, CCO).  
+6. Use **Genus–Species Definitions** to ensure rigor and clarity.  
+7. Specify **Object Properties** to link classes into a coherent knowledge graph.
+
+This structured approach helps ensure your ontology is **actionable**, **well-scoped**, and aligned with real-world needs, ultimately supporting clear, data-driven decisions.
