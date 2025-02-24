@@ -1,12 +1,1 @@
-Subject: Guest Lecture on Dependency Structure Matrix – Feb 24, 4 PM PT
 
-Hi [Manager's Name],
-
-I wanted to inform you that I will be delivering a guest lecture on Dependency Structure Matrix (DSM) for the Astronautical Engineering MS students at USC on Feb 24 at 4 PM PT. This is a lecture I have been delivering for the past 4-5 years during my time as a Teaching Assistant at USC.
-
-Prof. [Professor's Name] requested me to deliver this lecture as a favor, and this is not a paid engagement. The content is publicly available, and here is the presentation I will be using: https://www.shatad.com/matrix-methods.
-
-Please let me know if you have any questions.
-
-Best,
-Shatad
