@@ -1,1 +1,106 @@
+Slide: Objectives
 
+    States why the DSQ is important to the stakeholder.
+    Clarifies the business or operational goals behind the question.
+
+Example
+
+    Reduce unscheduled engine maintenance by 30% over the next year.
+    Improve on-time performance of flights.
+
+Slide: Competency
+
+    Outlines the capabilities or skills required to address the DSQ effectively.
+    May include data analysis expertise, domain knowledge (e.g., aeronautics, supply chain), or regulatory familiarity.
+
+Example
+
+    Domain knowledge in engine performance metrics.
+    Competency in data integration from multiple sensors.
+
+Slide: Decision
+
+    Pinpoints the exact choice that the DSQ will inform.
+    Often a yes/no or selection from multiple options.
+
+Example
+
+    Decision: Determine whether to ground specific aircraft for inspection, or continue operation.
+    Decision: Identify which engines to prioritize for maintenance budget.
+
+Slide: Decision Support Question (DSQ)
+
+    The question that must be answerable via the ontology.
+    Should be specific, measurable, and directly relevant to the decision.
+
+Example
+
+    “Which engines in the fleet have exceeded vibration thresholds in the last 30 days?”
+
+Slide: Potential Classes
+
+    Ontology entities you might need to represent in order to answer the DSQ.
+    Classes stem from domain objects, events, or conceptual groupings.
+
+Example
+
+    Engine, Aircraft, Fleet, Maintenance Event, Performance Issue.
+
+Slide: Potential Data Sources
+
+    Where to get the data needed to instantiate the classes and relationships.
+    Data sources must be accessible, reliable, and authorized.
+
+Example
+
+    Flight logs, maintenance records, sensor data, weather databases.
+    OEM (Original Equipment Manufacturer) component metadata.
+
+Slide: Class Categorization
+
+    High-level grouping of classes (e.g., BFO’s Continuant vs. Occurrent, or CCO’s classification).
+    Helps with consistent modeling and aligning with upper-level ontologies.
+
+Example
+
+    Engine (Material Entity, a Continuant).
+    Flight (Process, an Occurrent).
+
+Slide: Genus–Species Definition
+
+    Core principle in ontology: define a class by its genus (broader category) and the differentia (distinguishing features).
+    Ensures logical consistency and clear placement of each class in the hierarchy.
+
+Importance
+
+    Clarity: Avoids overlapping or ambiguous definitions.
+    Consistency: Aligns each class with a broader ontology (BFO, CCO).
+    Extensibility: Makes it easier to add new subclasses or related concepts later.
+
+Example
+
+    Jet Engine = Engine (genus) that produces thrust by expelling hot exhaust gases (species/differentia).
+    Engine is the broader concept; the specific mechanism of thrust (jet propulsion) distinguishes it from other Engine types (like piston engines).
+
+Slide: Object Properties
+
+    Relationships between classes (e.g., isInstalledOn, isOperatedBy, hasMaintenanceEvent).
+    Define how entities interact or connect, crucial for answering DSQs.
+
+Example
+
+    JetEngine isInstalledOn Aircraft.
+    MaintenanceCrew performs MaintenanceEvent.
+    PerformanceEvent hasTimeInterval TimeInterval.
+
+Putting It All Together
+
+    Identify Stakeholders using market segmentation to find your beachhead.
+    Clarify Objectives & Competencies for solving their specific problems.
+    Define the Decision & DSQ tightly so the ontology can answer it.
+    List Potential Classes & Data Sources needed to operationalize the DSQ.
+    Categorize Classes under the correct top-level ontologies (BFO, CCO).
+    Use Genus–Species Definitions to ensure rigor and clarity.
+    Specify Object Properties to link classes into a coherent knowledge graph.
+
+This structured approach helps ensure your ontology is actionable, well-scoped, and aligned with real-world needs, ultimately supporting clear, data-driven decisions.
