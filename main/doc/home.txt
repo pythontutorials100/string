@@ -27,3 +27,213 @@ The core framework is built around four interlinked steps:
     Completeness Theorems / Ontology Evaluation
         Prove (or at least demonstrate) that the axioms are both necessary and sufficient to answer the competency questions.
         If the ontology cannot fully answer them, it must be extended until it can.
+
+
+------------------------
+
+3. Informal Competency Questions
+
+    What They Are:
+        Human-level queries that the ontology should be able to answer if it is “competent.”
+        Serve as design requirements before moving into strict logic form.
+
+    Examples from the Material:
+        Activity Ontology: “What sequence of activities must be completed to achieve a goal?”
+        Organization Ontology: “Which agent has the authority to perform a particular activity?”
+
+    Key Message:
+        Good competency questions are layered and progressively complex—beyond mere lookup queries—so the ontology is genuinely tested.
+
+4. Formal Competency Questions
+
+    Transition from Informal:
+        Rewriting those same questions as entailment or consistency problems in first-order logic (or KIF).
+        Example: “Is the proposition Q entailed by the ontology T?” or “Is Q consistent with T?”
+
+    Importance:
+        This step forces precise definition of all terms in the question (e.g., Agent, Activity, hasAuthorityOver, etc.).
+        Exposes gaps in the ontology if there is no way to formalize part of a question.
+
+5. Specification in First-Order Logic: Terminology and Axioms
+
+    Terminology
+        Identify classes/objects (constants or domain sorts) and relationships (predicates).
+        For example, the situation calculus is used in the material to represent how actions cause state transitions over time (e.g., do(a, s) leads from situation s to do(a, s)).
+
+    Axioms
+        Rules that define how these classes and relations interact.
+        Clarify constraints, e.g., “If an action is performed in a valid situation, these fluents become true or false in the new situation.”
+
+    Frame Problem & Causality
+        The text uses Reiter’s solution to the frame problem—successor state axioms—to specify exactly when the truth of a “fluent” changes from one situation to the next.
+        Action occurrence axioms capture which action actually happens and how the “actual line” of events in the real world is selected.
+
+6. Completeness Theorems
+
+    Why They Matter:
+        Demonstrate that any model of the ontology (the set of axioms + ground facts) necessarily or consistently answers the competency questions.
+        If the ontology is incomplete, it will fail to prove or disprove the statements that correspond to competency questions.
+
+    Example:
+        A theorem that says: “All models of this ontology agree on the predicate ‘holds’ (the truth of a fluent), given the specified action occurrences” ensures consistent reasoning about states over time.
+
+--------------------------------
+
+1. Competency Questions
+1.1 What Are Competency Questions?
+
+Competency questions capture the requirements that an ontology must fulfill. Think of them as the motivating queries an engineer, designer, or automated system wants to ask of the knowledge graph.
+
+    Informal Competency Questions
+        Definition: High-level, descriptive, human-readable queries.
+        Purpose: Provide clarity on what the domain experts and stakeholders want from the ontology, before getting into the details of logic.
+        Example (Aerospace manufacturing scenario):
+            “Which activities must a particular technician perform to complete a scheduled maintenance event?”
+            “Which components in the rocket engine assembly line are causing the most frequent delays?”
+            “Which sub-system design changes require regulatory approval?”
+
+    Formal Competency Questions
+
+        Definition: The exact same questions rephrased in a logical language (e.g., first-order logic, OWL axioms, etc.).
+
+        Purpose: Ensure questions can be tested automatically against the formal ontology. In other words, they become formal entailment or consistency queries that the ontology must satisfy.
+
+        Example (Continuing the “technician” scenario above in a simplified first-order style):
+
+        ∃activity, technician, time 
+          [ AssignedTo(activity, technician) ∧ 
+            ScheduledStart(activity, time) ∧ 
+            HasTaskRequirement(activity, "MaintenanceCheck") ]
+
+        Here, the query is: “Find any activity (event) assigned to some technician at a particular time, which includes the maintenance check task.”
+
+How to Elicit Good Competency Questions
+
+    Tie Them to Real-World Needs: Start with a scenario such as a machine breakdown or a design change request.
+    Stratify: Have some questions that are straightforward lookups (“Which agent is assigned to X?”) and some that require reasoning over multiple facts or constraints (“If agent A has limited capacity, can agent B and A together finish the task on schedule?”).
+    Test for Necessity: Each question should justify the inclusion of concepts and relationships in the ontology. If you can’t trace a piece of the ontology back to a competency question, reconsider whether it’s needed.
+
+------------------------------------------------------------------
+
+
+
+1. Archetypes of Competency Questions (a.k.a. DSQs)
+
+    Archetype 1: Questions that Identify Objects
+        Example: “Which critical components (objects) are involved in subsystem X?”
+        Ontology Translation: These questions naturally suggest classes or instances (e.g., “components,” “assets”) along with properties (e.g., “is part of subsystem X”).
+
+    Archetype 2: Questions that Isolate Problems
+        Example: “Which failure modes have we encountered for subsystem X, and at what frequency?”
+        Ontology Translation: These prompt classes or taxonomies for “failure modes” (i.e., ways a component can fail) and relationships indicating how often they occur.
+
+    Archetype 3: Questions that Connect or Correlate Problems with Other Factors
+        Example: “Are certain environmental conditions correlated with system malfunctions?”
+        Ontology Translation: These questions typically require modeling relationships among multiple entities or events (e.g., “environment factor”—“affects”—“malfunction occurrence”).
+
+----------------------------------------------
+
+1. Change or Evolution Over Time
+
+Definition
+Questions about how objects, relationships, or metrics evolve, either historically or in future projections.
+
+Examples
+
+    “How does the functionality of Component X degrade over time (with usage or age)?”
+    “Which activities or events in the past year correlate with the highest failure rate?”
+
+Why It’s Unique
+
+    Often requires temporal concepts or a time-indexed representation in the ontology (e.g., states or snapshots).
+    May imply the need for versioning, time-bound attributes, or reification of events.
+
+2. Causal or Explanatory Questions
+
+Definition
+Questions that seek an explanation, cause, or root reason for an event or state in the domain.
+
+Examples
+
+    “What caused the drop in system power output last month?”
+    “Which underlying factors typically lead to a software bug in Subsystem Y?”
+
+Why It’s Unique
+
+    Requires modeling causal links or at least specifying associations that can be used for root-cause analysis.
+    May need specialized structures beyond simple class–subclass or part–whole hierarchies (e.g., causal graphs or logic rules capturing cause–effect).
+
+3. Compliance or Constraint Enforcement
+
+Definition
+Questions about whether some part of the domain (a process, product, or relationship) meets regulatory or internal constraints and standards.
+
+Examples
+
+    “Are all manufactured components certified to meet Standard Z guidelines?”
+    “Which tasks in the workflow violate safety regulation XYZ?”
+
+Why It’s Unique
+
+    Requires rules or axioms in the ontology that encode the constraints (regulatory, safety, contractual).
+    Often involves binary checks (compliant vs. noncompliant) and can lead to more detailed “violation explanations.”
+
+4. Hierarchy or Taxonomy Clarification
+
+Definition
+Questions that seek to classify domain entities into categories, subcategories, or more specialized classes.
+
+Examples
+
+    “Which types of equipment are categorized as critical infrastructure, and which as non-critical?”
+    “Is a newly discovered fault mode a subtype of an existing category or does it require a new category?”
+
+Why It’s Unique
+
+    Encourages building or refining taxonomies (class and subclass hierarchies).
+    Helps scope new or edge-case concepts that may need dedicated classes.
+
+5. Data Provenance and Lineage
+
+Definition
+Questions about tracing the origin, lifecycle, or chain of custody of data, components, or documents through the system.
+
+Examples
+
+    “Which supplier provided the sensor that ultimately failed, and under what contractual conditions?”
+    “What was the test procedure that produced the results leading to this design decision?”
+
+Why It’s Unique
+
+    May require explicit modeling of processes (e.g., who created or transformed data) and relationships like “wasDerivedFrom” or “wasGeneratedBy.”
+    Common in regulated environments where audits track data or material lineage.
+
+6. Decision/Action Outcome Ranking (with Specified Criteria)
+
+Definition
+Questions that compare multiple options or courses of action (COAs) based on well-defined, ontology-modeled criteria (unlike the too-vague question “Which yields the best result?”).
+
+Examples
+
+    “Given three design alternatives, which one minimally violates operational constraints under Condition A?”
+    “Which maintenance procedure is the cheapest while still meeting reliability thresholds?”
+
+Why It’s Unique
+
+    The key difference from a purely open-ended question is that the DSQ explicitly references domain attributes or relationships (e.g., “violation severity,” “cost,” “reliability threshold”) that the ontology can handle.
+    May require numeric or comparative data but is still anchored in well-defined ontology elements.
+
+7. Performance or Efficiency Queries
+
+Definition
+Questions targeting how effectively processes, products, or agents (people/robots) perform within certain parameters.
+
+Examples
+
+    “Which production lines are operating below the defined efficiency threshold?”
+    “In which test cycles have we consistently seen performance degradation, and what factors contributed to it?”
+
+Why It’s Unique
+
+    Often implies the ontology must include performance metrics, thresholds, and contexts for measurement (shift, time of day, environment).
+    May integrate quantitative data (e.g., metrics) with qualitative relationships (“isOperatedBy,” “inOperatingCondition”).
