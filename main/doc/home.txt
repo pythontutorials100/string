@@ -4,3 +4,26 @@ Terminology (in FOL): Formally define the objects, attributes, and relations tha
 Formal Competency Questions: Express each competency question as a logical entailment or consistency problem in first-order logic.
 Axioms: Capture all definitions and constraints on the terms in the ontology. These axioms give meaning to the terminology—without them, the ontology is incomplete.
 Completeness Theorems: Finally, evaluate whether the ontology can indeed answer the competency questions. Proving completeness theorems (or at least systematically testing the ontology with examples) ensures the ontology’s adequacy.
+
+
+1. Big-Picture Methodology
+
+The core framework is built around four interlinked steps:
+
+    Motivating Scenario
+        Present a real-world scenario or story problem that current ontologies struggle to address.
+        This scenario sets the stage for why new or extended ontologies are needed.
+
+    Competency Questions
+        Derive a set of questions (the “competency questions”) that the ontology must be able to answer if it is to solve the problem identified in the motivating scenario.
+        Two levels:
+            Informal Competency Questions: High-level, human-readable questions (e.g., “What activities must a particular agent perform?”).
+            Formal Competency Questions: These same questions expressed rigorously in a logical language (first-order logic, for example), so that they can be tested against the ontology’s axioms.
+
+    Specification in First-Order Logic
+        Terminology: Define the objects (classes, instances), attributes (unary predicates), and relations (n-ary predicates) that you need to answer the competency questions.
+        Axioms: State the constraints, rules, and definitions that give this terminology its meaning. This is the actual logical theory.
+
+    Completeness Theorems / Ontology Evaluation
+        Prove (or at least demonstrate) that the axioms are both necessary and sufficient to answer the competency questions.
+        If the ontology cannot fully answer them, it must be extended until it can.
