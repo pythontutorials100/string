@@ -2,136 +2,69 @@
 -Introduction to Logic 3'rd Edition, Genesereth & Kao
 -Knowledge Representation and Reasoning by Brachman and Levesque
 
----
-1. Physical Entities (Continuants)
-1.1 Airfoil
+------------------
 
-    Material Artifact (BFO:0000040)
-        The broad category in CCO for physically made objects (e.g., engines, tools, vehicles).
-        Since an airfoil is a manufactured part (e.g., a turbine blade or vane), it fits as a subclass (or instance) of Material Artifact.
+2. Using SHACL (Shapes Constraint Language)
 
-ex:Airfoil rdfs:subClassOf cco:MaterialArtifact .
+Where SWRL derives new facts (like measuredFrom3(?d, ex:LeadingEdge)) at reasoning time, SHACL is typically used for validating data or enforcing constraints—though it can also do some rule-like “property assignment” via extensions (SHACL Rules or SHACL Advanced Features).
+2.1 SHACL Validation Example
 
-(If you want to further situate the airfoil under Engine → Heat Engine → Combustion Engine → Internal Combustion Engine → Gas Turbine, you could do that. But if your focus is just the blade, placing it directly under Material Artifact is simpler.)
-1.2 Edge and Tip
+A SHACL shape can say:
 
-    fiat object part (BFO:0000024)
-        A “fiat” or “abstractly bounded” region of a physical object, not a separable part in its own right.
-        Leading edges, trailing edges, and tips are boundaries/regions of the airfoil.
+    “For any Defect whose chordwiseDistToLeadingEdge < 0.080, must have measuredFrom3 = LeadingEdge.”
 
-So you can define:
+You’d create a shape roughly like:
 
-ex:Edge rdfs:subClassOf cco:FiatObjectPart .
-ex:Tip  rdfs:subClassOf cco:FiatObjectPart .
+ex:LeadingEdgeRuleShape
+  rdf:type sh:NodeShape ;
+  sh:targetClass ex:Defect ;
+  # Condition: chordwiseDistToLeadingEdge < 0.08
+  sh:message "If chordwise < 0.08 from leading edge, measure Index3 from leading edge." ;
+  sh:condition ex:ChordwiseLessThanEdgeCondition ;  # a custom SHACL extension or function
+  sh:property [
+     sh:path ex:measuredFrom3 ;
+     sh:hasValue ex:LeadingEdge ;  # requires that measuredFrom3 is LeadingEdge
+  ] .
 
-Then create specific individuals (or subclasses) for LeadingEdge and TrailingEdge, both also under cco:FiatObjectPart.
-1.3 Defect
+(Exact syntax depends on your SHACL engine, especially if you need numeric comparisons.)
+If a data instance violates this shape, you get a validation error.
+2.2 SHACL Rules
 
-    Often modeled as a fiat object part as well—since a “defect” is really a region of damage on the airfoil, not a separate physical object.
+The SHACL Advanced Features (SHACL-AF) has a notion of “rules” that can create triples if a condition is met—similar to SWRL. For example:
 
-ex:Defect rdfs:subClassOf cco:FiatObjectPart .
+ex:LeadingEdgeAssignRule a sh:NodeShape ;
+    sh:targetClass ex:Defect ;
+    sh:rule [
+      rdf:type sh:TripleRule ;
+      sh:condition [
+         sh:path ex:chordwiseDistToLeadingEdge ;
+         sh:datatype xsd:float ;
+         # Pseudocode: if chordwiseDist < 0.08
+         # Depending on your SHACL engine’s extension for numeric filters
+      ] ;
+      sh:subject sh:this ;
+      sh:predicate ex:measuredFrom3 ;
+      sh:object ex:LeadingEdge ;
+    ] .
 
-You can refine further if you like:
+When run, the engine sees a Defect with chordwiseDistToLeadingEdge < 0.08 and automatically adds the triple (thatDefect measuredFrom3 LeadingEdge).
+3. Storing / Organizing the Rules
 
-ex:EdgeDefect rdfs:subClassOf ex:Defect .
-ex:TipDefect  rdfs:subClassOf ex:Defect .
+In OWL you can create a “placeholder” class or individual, e.g. ex:DefectMeasurementRule, typed under cco:Algorithm or cco:ActionRequirement, and attach each SWRL or SHACL rule to it as an annotation. For example, in Protégé you can store your SWRL rules in the ontology’s “SWRL Tab” (they become part of the .owl file). Or you can keep them in a separate file and refer to them from an owl:AnnotationProperty. Common patterns:
 
-2. Processes
-2.1 InspectionMethod (e.g., “scanbox”)
+    Inline: Keep the rules directly in the same .owl ontology (Protégé can store them that way).
+    Separate: Put rules in a separate .swrlt or .shapes.ttl file, then import or reference them from your main ontology.
 
-    process (BFO:0000015) → Act → Planned Act → Act of Measuring
-        In CCO, any deliberate measurement activity can be considered an “Act of Measuring.”
+4. Putting It All Together
 
-You might define:
+    Model your domain in OWL (classes for Defect, data properties for chordwise/spanning distances, etc.).
+    Choose a rule approach:
+        SWRL if you want to do forward-chaining or inference inside a typical OWL reasoner.
+        SHACL if you want data validation or property assignment in a more constraint-based environment.
+    Write the rules for each “if < 0.080 then measure from leading edge” scenario.
+    Run your reasoner or SHACL engine:
+        SWRL: The engine will infer new properties (like measuredFrom3(Defect_1, LeadingEdge)), or you can do queries.
+        SHACL: The engine will validate or auto‐assign the property based on your shape definitions.
+    Store or annotate those rules in your ontology so that the logic is documented and travels with the rest of your domain model.
 
-ex:InspectionMethod rdfs:subClassOf cco:ActOfMeasuring .
-
-That way, if you create an individual ex:ScanboxInspection of type ex:InspectionMethod, it inherits from cco:ActOfMeasuring.
-3. Measurements (Indices & Distances)
-3.1 Measurement Values
-
-According to CCO, numeric measurements are typically Information Content Entities in the category:
-
-generically dependent continuant (BFO:0000031)
- └─ Information Content Entity
-     └─ Descriptive Information Content Entity
-        └─ Measurement Information Content Entity
-           └─ Ratio Measurement Information Content Entity
-              └─ Distance Measurement Information Content Entity
-
-So you might define:
-
-ex:IndexMeasurement
-   rdfs:subClassOf cco:DistanceMeasurementInformationContentEntity .
-
-Then you can have ex:Index1Measurement, ex:Index2Measurement, ex:Index3Measurement, etc., all under cco:DistanceMeasurementInformationContentEntity. The same goes for Depth and Length, which are also distances:
-
-ex:DepthMeasurement  rdfs:subClassOf cco:DistanceMeasurementInformationContentEntity .
-ex:LengthMeasurement rdfs:subClassOf cco:DistanceMeasurementInformationContentEntity .
-
-Alternatively—and more simply—if you just want to store the numeric distance as a data property on the Defect instance, you can skip making classes for each measurement. But if you do want to follow CCO’s pattern strictly, giving each measurement its own individual is more aligned with “Information Content Entities.”
-4. Rules or “Template Describing Airfoil Defects”
-
-OWL itself cannot directly encode your “If chordwise < 0.080, measure index 3 from leading edge” logic. In CCO/BFO, instructions or constraints typically fall under:
-
-generically dependent continuant (BFO:0000031)
- └─ Information Content Entity
-     └─ Directive Information Content Entity
-         └─ Algorithm
-         (or Plan, or Action Requirement)
-
-So you could have:
-
-ex:DefectMeasurementRule
-   rdfs:subClassOf cco:Algorithm .
-
-Or:
-
-ex:DefectMeasurementRule
-   rdfs:subClassOf cco:ActionRequirement .
-
-Any of these “directive” classes would be used to store or reference the rules (in SWRL, SHACL, or external logic). For instance, you could keep them as text, or attach your SWRL statements as annotations, etc.
-5. Putting It All Together
-
-Here’s a concise summary of the minimal classes mapped onto CCO:
-
-    Airfoil
-        rdfs:subClassOf cco:MaterialArtifact.
-
-    Edge, Tip
-        rdfs:subClassOf cco:FiatObjectPart.
-
-    Defect
-        rdfs:subClassOf cco:FiatObjectPart.
-        (Optional) specialized as ex:EdgeDefect, ex:TipDefect.
-
-    InspectionMethod
-        rdfs:subClassOf cco:ActOfMeasuring.
-
-    Measurement Entities (Indices, Depth, Length)
-        rdfs:subClassOf cco:DistanceMeasurementInformationContentEntity.
-        e.g., ex:Index1Measurement, ex:DepthMeasurement, etc.
-
-    Rules
-        rdfs:subClassOf cco:Algorithm (or cco:ActionRequirement, or cco:Plan).
-
-Example in Turtle
-
-@prefix cco: <http://www.ontologyrepository.com/CCO_> .
-@prefix ex:  <http://example.com/airfoil#> .
-
-ex:Airfoil rdfs:subClassOf cco:MaterialArtifact .
-ex:Defect  rdfs:subClassOf cco:FiatObjectPart .
-ex:Edge    rdfs:subClassOf cco:FiatObjectPart .
-ex:Tip     rdfs:subClassOf cco:FiatObjectPart .
-
-ex:InspectionMethod rdfs:subClassOf cco:ActOfMeasuring .
-
-ex:Index1Measurement rdfs:subClassOf cco:DistanceMeasurementInformationContentEntity .
-ex:DepthMeasurement  rdfs:subClassOf cco:DistanceMeasurementInformationContentEntity .
-
-ex:DefectMeasurementRule rdfs:subClassOf cco:Algorithm .
-
-This anchors your custom classes in the CCO hierarchy. From here, you can add properties (object/data) and possibly SWRL/SHACL rules to handle “If chordwise < 0.080, then measure from leading edge,” etc.
-
-That’s the basic alignment needed to ensure your airfoil/defect data and rules are placed where they belong within the CCO structure.
+This way, your final knowledge graph (in e.g. Stardog) can automatically interpret new defect data (like chordwise = 0.05, spanwise = 0.5) and conclude that Index 3 is from the leading edge and Index 1,2 are from the platform—all driven by the rules you’ve embedded alongside the OWL classes.
