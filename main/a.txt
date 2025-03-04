@@ -3,3 +3,105 @@
 -Knowledge Representation and Reasoning by Brachman and Levesque
 
 ------------------
+
+### **What is SHACL?**
+SHACL (Shapes Constraint Language) is a W3C standard used to validate RDF graphs against a set of conditions or "shapes." It allows defining constraints on RDF data, ensuring that the data conforms to specific structural and integrity requirements.
+
+### **Why Use SHACL in Ontologies and Knowledge Graphs?**
+1. **Data Validation**: Ensures RDF data adheres to constraints defined in an ontology.
+2. **Consistency Enforcement**: Helps enforce modeling guidelines by restricting incorrect data entry.
+3. **Constraint Checking**: Specifies domain/range constraints more rigorously than OWL.
+4. **Business Rules Enforcement**: Embeds application-specific constraints in the knowledge graph.
+5. **Better Error Handling**: Unlike OWL, which infers inconsistencies, SHACL provides validation reports.
+
+### **How SHACL Complements Ontologies and OWL**
+- **OWL**: Focuses on reasoning (inferences, classification).
+- **SHACL**: Focuses on validation (ensuring correct structure and constraints).
+- **Example**: OWL can infer that a missing property value exists; SHACL can flag it as an error.
+
+---
+
+## **Hands-On SHACL in Stardog Studio**
+Since you have **Stardog Studio**, you can create and test SHACL shapes directly.
+
+### **Step 1: Define Your Ontology in RDF**
+Let’s assume you have an ontology defining **People** and **their Ages**:
+
+```turtle
+@prefix ex: <http://example.org/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:Person a rdfs:Class .
+ex:age a rdf:Property ;
+    rdfs:domain ex:Person ;
+    rdfs:range xsd:integer .
+```
+
+---
+
+### **Step 2: Define SHACL Constraints**
+SHACL constraints are defined in RDF using **shapes**. Below, we define a constraint to ensure:
+- Every `Person` must have an `age`
+- The `age` must be a **positive integer** (greater than 0)
+
+```turtle
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix ex: <http://example.org/> .
+
+ex:PersonShape
+    a sh:NodeShape ;
+    sh:targetClass ex:Person ;
+    
+    # Age must be present
+    sh:property [
+        sh:path ex:age ;
+        sh:minCount 1 ;  # Must have at least one value
+        sh:maxCount 1 ;  # Must have at most one value
+        sh:datatype xsd:integer ;  # Must be an integer
+        sh:minInclusive 0 ;  # Must be greater than or equal to 0
+    ] .
+```
+
+---
+
+### **Step 3: Add Sample Data**
+Now, create test data to validate against SHACL:
+
+```turtle
+@prefix ex: <http://example.org/> .
+
+ex:JohnDoe a ex:Person ;
+    ex:age 30 .  # Valid
+
+ex:JaneDoe a ex:Person ;
+    ex:age -5 .  # Invalid (negative age)
+
+ex:JackDoe a ex:Person .  # Invalid (missing age)
+```
+
+---
+
+### **Step 4: Run SHACL Validation in Stardog**
+1. Open **Stardog Studio**.
+2. Create a new database or use an existing one.
+3. Upload your **ontology**, **SHACL shapes**, and **test data**.
+4. Run SHACL validation with:
+   ```
+   stardog data validate --shacl path/to/shacl.ttl myDatabase
+   ```
+5. Stardog will return validation errors like:
+   ```
+   Constraint violation: ex:JaneDoe has an age of -5, which is less than 0.
+   Constraint violation: ex:JackDoe is missing an age property.
+   ```
+
+---
+
+## **Next Steps for Advanced SHACL Learning**
+- **SPARQL-Based Validation**: SHACL allows using SPARQL to create custom constraints.
+- **Complex Shape Validation**: Define relationships (e.g., “A `Person` must be related to at least one `Organization`”).
+- **SHACL-AF (Advanced Features)**: Use SHACL rules for inference.
+
+Would you like a real-time walkthrough, or do you need more complex SHACL examples? 🚀
