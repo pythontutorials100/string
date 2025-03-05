@@ -1,7 +1,76 @@
+1. Purpose of the Presentation
 
+    Establish a Common Foundation: Demonstrate why a standardized “shared language” (or ontology) is necessary for seamless data interoperability across the product lifecycle—covering engineering, manufacturing, supply chain, and beyond.
+
+    Showcase Alignment with Industry Standards: Highlight how using recognized frameworks (e.g., BFO, CCO, ISO/IEC standards) ensures compatibility with leading industry practices and DoD mandates.
+
+    Encourage Collaboration: Provide clarity on how different teams (and external partners) can contribute to and benefit from this shared ontology/knowledge graph approach. Lay out next steps and potential pilot projects that help illustrate real, near-term value.
 
 
 
 -----------------------
 
 
+External Partners
+
+    OEMs, Suppliers, Customers: They need to see how collaboration with RTX using a common language will reduce friction and enhance data exchange.
+
+--------------------
+3. Why Should They Listen
+
+    Solving Pain Points:
+        Data Silos & Inconsistencies: Inconsistent definitions across teams cause rework, delays, and confusion. A shared ontology solves this by unifying how data is described and exchanged.
+        Supplier & Partner Coordination: Many organizations struggle to integrate supplier data into their systems. A “shared language” approach streamlines that process, saving time and money.
+
+    Strategic Advantage:
+        Faster Innovation: A common framework enables quicker data analysis and easier adoption of advanced technologies (AI, Machine Learning, Digital Twins).
+        Compliance & Standards: Aligning with recognized standards (BFO, CCO, ISO) ensures compliance with DoD or industry requirements, reducing integration challenges down the line.
+
+    Practical Roadmap:
+        Your presentation isn’t just theoretical: it showcases pilot projects, real use cases, and tangible next steps, giving attendees a clear path to get involved and see immediate benefits.
+
+-----------------
+Purpose: To convince and equip stakeholders with a blueprint for how an ontology-based “shared language” accelerates digital engineering goals and drives interoperability across the product lifecycle.
+
+Reason to Listen: The presentation addresses real pain points (data silos, complexity, standards compliance) and offers a practical, proven strategy (adopting a standardized ontology) with immediate next steps.
+
+Value: Reduced costs, fewer errors, enhanced decision-making, stronger collaboration, and alignment with both DoD and international standards—leading to a more efficient, competitive organization.
+
+---------------------------
+
+
+1. Slide: “Contents”
+
+Script:
+
+    “Welcome, everyone. Today, we’ll explore our approach to establishing a unified, ‘shared language’ for seamless data interoperability across the product lifecycle. We’ll start by reviewing the RTX MBDT PCC’s mission and role, then dive into the shared language objective and how it aligns with industry standards. We’ll discuss the value of ontology, provide an overview of the REO Enterprise Ontology Suite, and identify strategic stakeholders. Finally, we’ll look at potential pilot projects for Collins Aerospace, Raytheon, Pratt & Whitney, and across RTX. Let’s begin.”
+
+2. Slide: “Model-Based Digital Thread PCC (Process Capability Center)”
+
+Script:
+
+    “Our PCC—Process Capability Center—focuses on coordinating strategy, development, and adoption of key digital engineering capabilities at RTX. We drive DE roadmap alignment, promote standardization, and share learnings across our businesses. We also help orchestrate industry standards contributions and identify how to mature our digital engineering practices. Our priority areas include creating integrated digital collaboration environments, refining digital engineering standards, and enabling connected product data throughout the enterprise. Essentially, we’re the force behind making the digital thread a reality across RTX’s vast ecosystem.”
+
+3. Slide: “Shared Language Objective & Vision”
+
+Script:
+
+    “Our vision is to create a unified framework of shared language to enable seamless sharing of data, knowledge, analytics, and models throughout the product lifecycle—covering customers, OEMs, and suppliers. By standardizing how we define and interpret information, we can significantly reduce confusion, foster better collaboration, and ultimately empower every organization in our ecosystem to innovate more effectively.”
+
+4. Slide: “Boeing 787 Product List Example”
+
+Script:
+
+    “Here’s a snapshot from a Boeing 787 product list, including sensors, fire protection systems, communication modules, and display units. It’s a perfect example of the complexity in modern aerospace products. Each component is managed by various teams and suppliers, often speaking different ‘data languages.’ By establishing a shared ontology, we unify how we describe, track, and analyze these parts, streamlining communication and reducing costly misinterpretations.”
+
+5. Slide: “Product Life Cycle – Goals”
+
+Script:
+
+    “Across the product life cycle, we want to connect data and information seamlessly for our customers, partners, and suppliers. That means clearly communicating requirements and context, reducing confusion and supplier rework, and ultimately improving the entire supplier and partner experience. By doing so, we cut down on rework, minimize schedule or factory downtime risks, and make better decisions faster. We can also share complex analytics more freely—breaking down knowledge silos that often block the flow of critical insights.”
+
+6. Slide: “Shared Language Industry Standards”
+
+Script:
+
+    “Achieving a shared language starts with standardized data definitions and ontologies. We look to frameworks like ISO 81346, which is aligned with Airbus and covers thousands of industry-defined concepts. There are also broader standards from IOF, OMG, OWL 2, and INCOSE addressing systems engineering, logistics, supply chain, and more. Critically, ISO/IEC 21838-2 formalizes Basic Formal Ontology—BFO—and Common Core Ontology (CCO) as DoD-mandated top-level standards. They define high-level taxonomies that enable interoperability across different domains. By aligning our internal practices with these accepted standards, we ensure that our ‘shared language’ is globally recognized and future-proofed.”
