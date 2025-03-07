@@ -1,75 +1,70 @@
-Slide Title: What Does an Ontology Look Like? (Aerospace Example)
-Script / Speaker Notes
+BFO: Continuant vs. Occurrent
 
-Intro:
+Speaker Notes / Script:
 
-    “On this slide, I’ll show you how the same piece of knowledge—about a rocket engine and the propellants it uses—can be represented in different forms: from formal logic to a graphical diagram, and finally in a machine-processable OWL file.”
+    Introduction to BFO
+    “BFO, the Basic Formal Ontology, is widely used as a top-level or upper ontology. One of its key insights is dividing all entities into Continuants and Occurrents. Let’s explore what that means.”
 
-1. Multiple Ways to Represent the Same Knowledge
+1. Continuant
 
-    Formal Logic (FOL)
-        Speaker Note: “Here’s the rigorous mathematical statement of our domain fact: every rocket engine uses only rocket propellant, plus at least one of them is cryogenic. This is how a logician might express it.”
+        “A Continuant is something that persists through time while potentially undergoing changes in its qualities or relationships. Think of it as an entity that exists in full at any moment you look at it. It doesn’t ‘unfold’ over time; rather, it endures through time.”
 
-    Description Logic
-        Speaker Note: “In Description Logics, we capture essentially the same constraints. This language is often used by ontologists and knowledge engineers to drive automated reasoning about class hierarchies and relationships.”
+    “Within Continuants, we have several categories:”
 
-    User-Friendly/Natural Language
-        Speaker Note: “Of course, domain experts prefer something easier to read. We can automatically generate a plain-English sentence: ‘Every rocket engine uses only rocket propellants and uses at least one cryogenic propellant.’”
+        Material Entities:
 
-    Graphical Diagram (Protégé/UML)
-        Speaker Note: “Using a visual editor like Protégé or a UML-style diagram, we draw a ‘RocketEngine’ class connected to ‘RocketPropellant’ by the property ‘uses,’ with annotations or constraints showing ‘only rocket propellant’ and ‘at least one cryogenic propellant.’”
+            “These are physical, tangible objects—for instance, an aircraft component, a rocket engine, or a wrench.”
 
-2. Machine-Processable (OWL/RDF) Example
+        Immaterial Sites:
 
-    Speaker Note:
-    “Finally, here’s the OWL/RDF code. A computer can read this directly. Notice how we have <owl:Restriction> blocks defining ‘allValuesFrom’ (only RocketPropellant) and ‘someValuesFrom’ (at least one CryogenicPropellant). This is the backbone of semantic web technologies—allowing reasoners and applications to interpret these axioms unambiguously.
+            “Things like a hole, a boundary, or an empty region of space. They exist, but they’re not made of physical matter.”
 
-    We see classes like RocketEngine, Engine, and RocketPropellant, as well as the object property uses. The comment is optional metadata for human readers.”
+        Points in Space or Boundaries:
 
-Closing:
+            “Examples include the surface boundary of a wing or a particular coordinate in space.”
 
-    “All these representations describe the same fact: a rocket engine relies exclusively on rocket propellants, and at least one of those propellants is cryogenic. Each format has a specific purpose—from helping domain experts grasp constraints in plain language to enabling software agents to perform automated reasoning and consistency checks.”0
+        Physical Qualities:
 
+            “Properties like mass, shape, length, or color that characterize a physical entity.”
 
-1. First-Order Logic Statement
+        Dispositions:
 
-Statement:
-∀x(RocketEngine(x)→[∀y(uses(x,y)→RocketPropellant(y))  ∧  ∃z(uses(x,z)∧CryogenicPropellant(z))])
-∀x(RocketEngine(x)→[∀y(uses(x,y)→RocketPropellant(y))∧∃z(uses(x,z)∧CryogenicPropellant(z))])
+            “Capabilities or tendencies an entity has—like a battery’s capacity to hold charge, or a rocket engine’s ability to produce thrust.”
 
-How to Read It Aloud (Script):
+        Functions:
 
-        “For every object x—
-            if x is a RocketEngine, then two things must be true:
-                For every object y, if x uses y, then y must be a RocketPropellant.
-                There exists at least one object z such that x uses z, and that z is a CryogenicPropellant.”
+            “The intended role or purpose of a component—e.g., a turbine’s function to spin and produce mechanical power.”
 
-Then you might add an interpretation:
+    “All of these are considered Continuants because they’re the ‘things’ that exist at each snapshot in time, even if their states or properties might evolve.”
 
-        “In simpler terms, every rocket engine uses only rocket propellants, and must use at least one cryogenic propellant.”
+2. Occurrent
 
-2. Description Logic Statement
+    “An Occurrent is an entity that unfolds over time—a process, event, or action that has a start, a progression, and an end.”
 
-Statement:
-RocketEngine  ⊑  ∀uses.RocketPropellant  ⊓  ∃uses.CryogenicPropellant
-RocketEngine⊑∀uses.RocketPropellant⊓∃uses.CryogenicPropellant
+    “Examples of Occurrents include:”
 
-How to Read It Aloud (Script):
+        Processes:
 
-        “RocketEngine is a subclass of ‘for all uses RocketPropellant’ and ‘there exists uses CryogenicPropellant.’”
+            “Such as a rocket test firing, an aircraft’s flight from takeoff to landing, or a maintenance procedure.”
 
-To clarify further:
+        Actions:
 
-        “Any entity classified as a RocketEngine has the property that everything it ‘uses’ is a RocketPropellant, and there is at least one thing it ‘uses’ that is a CryogenicPropellant.”
+            “These are specialized processes often involving an agent’s intentional action—for instance, a mechanic repairing a turbine.”
 
-Simplified Interpretation:
+        Process Boundaries:
 
-        “So, if something is a RocketEngine, it can’t use anything that isn’t a RocketPropellant, and it must use at least one cryogenic propellant.”
+            “The exact moment a process starts or ends—like the moment an engine test begins, or when it’s concluded.”
 
-Additional Notes to Emphasize
+        Temporal Intervals:
 
-    ∀ (For all): Imposes a universal condition (e.g., “all items used are rocket propellants”).
-    ∃ (There exists): Imposes an existential condition (“at least one such item is cryogenic”).
-    ⊑ (Subclass or ‘is a subset of’): Means every instance of the left class meets the conditions on the right.
+            “A span of time during which something occurs—like the flight duration from T=0 to T=3 hours.”
 
-By reading them in plain English, you can convey the logic without overwhelming the audience with symbols.
+    “So Occurrents are time-bound phenomena—you can’t point to all of it at any single moment, because part of it is in the past, part of it’s happening right now, and part is in the future.”
+
+3. Why This Distinction Matters
+
+    “Understanding Continuant vs. Occurrent is crucial because it shapes how we model things in our ontology. We recognize if we’re talking about a thing (like a rocket engine) that endures through time or an event (like a test firing) that happens through time. This distinction helps keep our ontology consistent, clarifies constraints, and supports more accurate data integration and reasoning.”
+
+Closing / Summary:
+
+    “In short, Continuants are the ‘things’ that exist from moment to moment (objects, properties, functions), while Occurrents are the ‘happenings’ or events that unfold. This fundamental split is one of BFO’s core organizing principles, making it easier to classify real-world aerospace entities—from physical parts to the processes and actions surrounding them.”
