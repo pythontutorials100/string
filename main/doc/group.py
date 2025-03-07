@@ -29,3 +29,47 @@ Intro:
 Closing:
 
     “All these representations describe the same fact: a rocket engine relies exclusively on rocket propellants, and at least one of those propellants is cryogenic. Each format has a specific purpose—from helping domain experts grasp constraints in plain language to enabling software agents to perform automated reasoning and consistency checks.”0
+
+
+1. First-Order Logic Statement
+
+Statement:
+∀x(RocketEngine(x)→[∀y(uses(x,y)→RocketPropellant(y))  ∧  ∃z(uses(x,z)∧CryogenicPropellant(z))])
+∀x(RocketEngine(x)→[∀y(uses(x,y)→RocketPropellant(y))∧∃z(uses(x,z)∧CryogenicPropellant(z))])
+
+How to Read It Aloud (Script):
+
+        “For every object x—
+            if x is a RocketEngine, then two things must be true:
+                For every object y, if x uses y, then y must be a RocketPropellant.
+                There exists at least one object z such that x uses z, and that z is a CryogenicPropellant.”
+
+Then you might add an interpretation:
+
+        “In simpler terms, every rocket engine uses only rocket propellants, and must use at least one cryogenic propellant.”
+
+2. Description Logic Statement
+
+Statement:
+RocketEngine  ⊑  ∀uses.RocketPropellant  ⊓  ∃uses.CryogenicPropellant
+RocketEngine⊑∀uses.RocketPropellant⊓∃uses.CryogenicPropellant
+
+How to Read It Aloud (Script):
+
+        “RocketEngine is a subclass of ‘for all uses RocketPropellant’ and ‘there exists uses CryogenicPropellant.’”
+
+To clarify further:
+
+        “Any entity classified as a RocketEngine has the property that everything it ‘uses’ is a RocketPropellant, and there is at least one thing it ‘uses’ that is a CryogenicPropellant.”
+
+Simplified Interpretation:
+
+        “So, if something is a RocketEngine, it can’t use anything that isn’t a RocketPropellant, and it must use at least one cryogenic propellant.”
+
+Additional Notes to Emphasize
+
+    ∀ (For all): Imposes a universal condition (e.g., “all items used are rocket propellants”).
+    ∃ (There exists): Imposes an existential condition (“at least one such item is cryogenic”).
+    ⊑ (Subclass or ‘is a subset of’): Means every instance of the left class meets the conditions on the right.
+
+By reading them in plain English, you can convey the logic without overwhelming the audience with symbols.
