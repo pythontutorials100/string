@@ -1,1 +1,112 @@
 
+@prefix ex:  <http://example.org#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+##############################################################################
+# Optional: Declare properties used in your CSV (not strictly required, 
+#           but helpful for clarity and schema definition).
+##############################################################################
+ex:generically_depends_on a owl:ObjectProperty .
+ex:designates a owl:ObjectProperty .
+ex:has_text_value a owl:DatatypeProperty .
+ex:has_participant a owl:ObjectProperty .
+ex:occurs_at a owl:ObjectProperty .
+ex:has_continuant_part a owl:ObjectProperty .
+ex:prescribes a owl:ObjectProperty .
+
+##############################################################################
+# Classes mentioned in your CSV (derived from rows where ObjectType = "Class").
+# We declare them as rdfs:Class here.
+##############################################################################
+ex:Unmanned_Aerial_Vehicle a rdfs:Class .
+ex:Designative_Information_Content_Entity a rdfs:Class .
+ex:Information_Bearing_Entity a rdfs:Class .
+
+##############################################################################
+# Triples derived from your CSV.
+# Each subject/object is converted to an IRI by replacing spaces and special 
+# characters with underscores. Objects with ObjectType="Literal" are left as strings.
+##############################################################################
+
+# 1) UAV_A123_1 rdf:type Unmanned Aerial Vehicle
+ex:UAV_A123_1 rdf:type ex:Unmanned_Aerial_Vehicle .
+
+# 2) ice uav 1 ID rdf:type Designative Information Content Entity
+ex:ice_uav_1_ID rdf:type ex:Designative_Information_Content_Entity .
+
+# 3) ice uav 1 ID generically depends on ibe 1 DBCell_UAV_inventory_27
+ex:ice_uav_1_ID ex:generically_depends_on ex:ibe_1_DBCell_UAV_inventory_27 .
+
+# 4) ice uav 1 ID designates UAV_A123_1
+ex:ice_uav_1_ID ex:designates ex:UAV_A123_1 .
+
+# 5) ice uav 1 ID generically depends on ibe 2 ExcelCell_CurrentUAV_CB2
+ex:ice_uav_1_ID ex:generically_depends_on ex:ibe_2_ExcelCell_CurrentUAV_CB2 .
+
+# 6) ice uav 1 ID generically depends on ibe 3 XML_UAVID_Element
+ex:ice_uav_1_ID ex:generically_depends_on ex:ibe_3_XML_UAVID_Element .
+
+# 7) ibe 1 DBCell_UAV_inventory_27 has text value "UAV #A123 B19325"
+ex:ibe_1_DBCell_UAV_inventory_27 ex:has_text_value "UAV #A123 B19325" .
+
+# 8) ibe 1 DBCell_UAV_inventory_27 rdf:type Information Bearing Entity
+ex:ibe_1_DBCell_UAV_inventory_27 rdf:type ex:Information_Bearing_Entity .
+
+# 9) ibe 2 ExcelCell_CurrentUAV_CB2 has text value "UAV #A123 B19325"
+ex:ibe_2_ExcelCell_CurrentUAV_CB2 ex:has_text_value "UAV #A123 B19325" .
+
+# 10) ibe 2 ExcelCell_CurrentUAV_CB2 rdf:type Information Bearing Entity
+ex:ibe_2_ExcelCell_CurrentUAV_CB2 rdf:type ex:Information_Bearing_Entity .
+
+# 11) ibe 3 XML_UAVID_Element has text value "UAV #A123 B19325"
+ex:ibe_3_XML_UAVID_Element ex:has_text_value "UAV #A123 B19325" .
+
+# 12) ibe 3 XML_UAVID_Element rdf:type Information Bearing Entity
+ex:ibe_3_XML_UAVID_Element rdf:type ex:Information_Bearing_Entity .
+
+# 13) UAV 1 maintenance process 1001031425 has participant UAV_A123_1
+ex:UAV_1_maintenance_process_1001031425 ex:has_participant ex:UAV_A123_1 .
+
+# 14) UAV 1 maintenance process 1001031425 occurs at main plant 01
+ex:UAV_1_maintenance_process_1001031425 ex:occurs_at ex:main_plant_01 .
+
+# 15) ibe 1 DBCell_plantloc_2 has text value "Los Angeles PL 3001"
+ex:ibe_1_DBCell_plantloc_2 ex:has_text_value "Los Angeles PL 3001" .
+
+# 16) ice plant 1 ID designates main plant 01
+ex:ice_plant_1_ID ex:designates ex:main_plant_01 .
+
+# 17) ice plant 1 ID generically depends on ibe 1 DBCell_plantloc_2
+ex:ice_plant_1_ID ex:generically_depends_on ex:ibe_1_DBCell_plantloc_2 .
+
+# 18) UAV fleet we1 has continuant part UAV_A123_1
+ex:UAV_fleet_we1 ex:has_continuant_part ex:UAV_A123_1 .
+
+# 19) UAV fleet we1 has continuant part UAV_A123_2
+ex:UAV_fleet_we1 ex:has_continuant_part ex:UAV_A123_2 .
+
+# 20) ice uav 2 ID generically depends on ibe 12 ExcelCell_CurrentUAV_CC2
+ex:ice_uav_2_ID ex:generically_depends_on ex:ibe_12_ExcelCell_CurrentUAV_CC2 .
+
+# 21) ice uav 2 ID designates UAV_A123_2
+ex:ice_uav_2_ID ex:designates ex:UAV_A123_2 .
+
+# 22) ibe 12 ExcelCell_CurrentUAV_CC2 has text value "UAV #A123 B14032"
+ex:ibe_12_ExcelCell_CurrentUAV_CC2 ex:has_text_value "UAV #A123 B14032" .
+
+# 23) UAV A123 model specification prescribes UAV_A123_1
+ex:UAV_A123_model_specification ex:prescribes ex:UAV_A123_1 .
+
+# 24) UAV A123 model specification has continuant part Controller UAV A123 model specification
+ex:UAV_A123_model_specification ex:has_continuant_part ex:Controller_UAV_A123_model_specification .
+
+# 25) UAV A123 model specification has continuant part Sensor Therm UAV A123 model specification
+ex:UAV_A123_model_specification ex:has_continuant_part ex:Sensor_Therm_UAV_A123_model_specification .
+
+# 26) Sensor Therm UAV A123 model specification generically depends on ibe 31 XML_SENSORThern_Ele
+ex:Sensor_Therm_UAV_A123_model_specification ex:generically_depends_on ex:ibe_31_XML_SENSORThern_Ele .
+
+# 27) ibe 31 XML_SENSORThern_Ele has text value "Torus R MPT 50 Long Range"
+ex:ibe_31_XML_SENSORThern_Ele ex:has_text_value "Torus R MPT 50 Long Range" .
