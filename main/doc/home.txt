@@ -1,1 +1,29 @@
+Subject,SubjectType,Predicate,Object,ObjectType
+UAV_A123_1,Individual,rdf:type,Unmanned Aerial Vehicle ,Class
+ice uav 1 ID,Individual,rdf:type,Designative Information Content Entity,Class
+ice uav 1 ID,Individual,generically depends on,ibe 1 DBCell_UAV_inventory_27,Individual
+ice uav 1 ID,Individual,designates,UAV_A123_1,Individual
+ice uav 1 ID,Individual,generically depends on,ibe 2 ExcelCell_CurrentUAV_CB2,Individual
+ice uav 1 ID,Individual,generically depends on,ibe 3 XML_UAVID_Element,Individual
+ibe 1 DBCell_UAV_inventory_27,Individual,has text value,UAV #A123 B19325,Literal
+ibe 1 DBCell_UAV_inventory_27,Individual,rdf:type,Information Bearing Entity,Class
+ibe 2 ExcelCell_CurrentUAV_CB2,Individual,has text value,UAV #A123 B19325,Literal
+ibe 2 ExcelCell_CurrentUAV_CB2,Individual,rdf:type,Information Bearing Entity,Class
+ibe 3 XML_UAVID_Element,Individual,has text value,UAV #A123 B19325,Literal
+ibe 3 XML_UAVID_Element,Individual,rdf:type,Information Bearing Entity,Class
+UAV 1 maintenance process 1001031425,Individual,has participant,UAV_A123_1,Individual
+UAV 1 maintenance process 1001031425,Individual,occurs at,main plant 01,Individual
+ibe 1 DBCell_plantloc_2,Individual,has text value,Los Angeles PL 3001,Literal
+ice plant 1 ID,Individual,designates,main plant 01,Individual
+ice plant 1 ID,Individual,generically depends on,ibe 1 DBCell_plantloc_2,Individual
+UAV fleet we1,Individual,has continuant part,UAV_A123_1,Individual
+UAV fleet we1,Individual,has continuant part,UAV_A123_2,Individual
+ice uav 2 ID,Individual,generically depends on,ibe 12 ExcelCell_CurrentUAV_CC2,Individual
+ice uav 2 ID,Individual,designates,UAV_A123_2,Individual
+ibe 12 ExcelCell_CurrentUAV_CC2,Individual,has text value,UAV #A123 B14032,Literal
+UAV A123 model specification,Individual,prescribes,UAV_A123_1,Individual
+UAV A123 model specification,Individual,has continuant part,Controller UAV A123 model specification,Individual
+UAV A123 model specification,Individual,has continuant part,Sensor Therm UAV A123 model specification,Individual
+Sensor Therm UAV A123 model specification,Individual,generically depends on,ibe 31 XML_SENSORThern_Ele,Individual
+ibe 31 XML_SENSORThern_Ele,Individual,has text value,Torus R MPT 50 Long Range,Literal
 
