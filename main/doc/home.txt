@@ -1,1 +1,12 @@
+PREFIX ex: <http://example.org#>
+
+SELECT ?maintenanceProcess ?locationIRI ?locationLabel
+WHERE {
+  ?maintenanceProcess ex:occurs_at ?locationIRI .
+  OPTIONAL {
+    ?someIceID ex:designates ?locationIRI ;
+               ex:generically_depends_on ?someIBE .
+    ?someIBE ex:has_text_value ?locationLabel .
+  }
+}
 
