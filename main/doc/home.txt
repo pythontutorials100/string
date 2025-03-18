@@ -1,164 +1,79 @@
-Slide Title
+Slide 1: Time Ontology – Representing When Aerospace Events Occur
 
-Agent Ontology: Modeling People, Organizations, and Their Roles in Jet Engine Manufacturing
-Key Concepts
+Slide Content:
 
-    Agent: Top-level class representing:
-        Individual Agents (e.g., Person)
-        Organizational Agents (e.g., Manufacturer, Supplier, Subsidiary)
-    Qualities: Attributes of agents (e.g., HEIGHT, WEIGHT, SECURITY CLEARANCE)
-    Roles: Context-specific functions or duties (e.g., ENGINE TECHNICIAN ROLE, SUPERVISOR ROLE, QUALITY INSPECTOR ROLE)
+    Overview of Time Ontology
+        Represents temporal intervals (YEAR, MONTH, DAY, MORNING, MULTI-HOUR INTERVAL).
+        Provides temporal relations (interval disjoint, meets, overlaps, starts) for reasoning.
+        Enables the precise description of when events occur.
 
-Why It Matters (in Aerospace Manufacturing)
+    Aerospace Example: Engine Test Event
+        Engine Test Event 1 occurs on Test Day 1.
+        Test Day 1 is part of Test Month 1.
+        Test Month 1 is within Test Year 1.
 
-    Capture who performs which tasks on the production line (technicians, inspectors, managers).
-    Link employees’ roles and certifications to the organization (e.g., a specific jet-engine manufacturer).
-    Enable consistent representation of people and teams, ensuring clarity in big projects (e.g., new jet-engine design rollout).
+    Key Relationships (Triples):
+        Engine Test Event 1 – occurs on → Test Day 1
+        Test Day 1 – interval during → Test Month 1
+        Test Month 1 – interval during → Test Year 1
 
-Example 1: Agents in Organizational Context
+    Designative Entities:
+        Each date element (day, month, year) is detailed via a Temporal Interval Identifier and linked to an Information Bearing Entity (e.g., numeric day “15”, text “January”, integer “2025”).
 
-Imagine a Production Technician working at Jet Engines Inc. to assemble a new X-2000 turbofan engine.
+Slide 2: Detailed Time Representation in Aerospace
 
-    Person 1 (e.g., “Jane Smith”)
-        Has an Occupation Role = Production Technician Role
-    Jet Engines Inc. (an Organization)
-        Linked to the technician’s role via has organizational context
+Slide Content:
 
-Key CCO Concepts & Relations
+    Detailed Breakdown:
+        Test Day 1:
+            Represented by a Temporal Interval Identifier (e.g., “Day Identifier 1” designates Test Day 1).
+            Information Bearing Entity holds the day’s value (e.g., has_integer_value → 15).
+        Test Month 1:
+            Temporal Interval Identifier for the month (e.g., “Month Identifier 1” designates Test Month 1).
+            Information Bearing Entity holds the month’s value (e.g., has_text_value → “January”).
+        Test Year 1:
+            Temporal Interval Identifier for the year (e.g., “Year Identifier 1” designates Test Year 1).
+            Information Bearing Entity holds the year’s value (e.g., has_integer_value → 2025).
 
-person 1  --has role--> production technician role 1
-production technician role 1  --has organizational context--> jet engines inc.
+    Note:
+        This structure allows handling both precise and imprecise temporal data.
+        Multiple descriptions (e.g., “Spring 2025” vs. “January 15, 2025”) can be resolved to a single, uniquely defined interval.
 
-Name Representation
+Slide 3: Event Ontology – Modeling Aerospace Events
 
-    person name 1 (a Designative Information Content Entity) -> “Jane Smith”
-    organization name 1 -> “Jet Engines Inc.”
+Slide Content:
 
-Visual: (Slide diagram)
+    Overview of Event Ontology:
+        Represents events, actions, processes, and states.
+        Defines relationships between participants (agents, artifacts) and temporal intervals.
+        Supports modeling of intentional acts and attribute changes over time.
 
-    Show a Person box, linked by “has role” arrow to Production Technician Role, which in turn links by “has organizational context” arrow to Jet Engines Inc..
-    Each name uses “Designative Information Content Entity” and an “Information Bearing Entity” holding the text value (e.g., “Jane Smith”).
+    Aerospace Example: Engine Test & Maintenance Event
+        Engine Test Event 1 (a subclass of Process)
+            Occurs on Test Day 1.
+            Involves a jet engine (artifact) and a test technician (agent).
+        Triplet Examples:
+            Engine Test Event 1 – rdf → Engine Test (Process subclass)
+            Engine Test Event 1 – occurs on → Test Day 1
+            Test Day 1 – rdf → Day
+            Technician 1 – rdf → Person
+            Technician 1 – participates in → Engine Test Event 1
 
-Example 2: Agents in a Test Event
+    Additional Capability:
+        Supports representation of events with imprecise times and merging multiple temporal descriptions into one unified event.
 
-Now consider Engine Acceptance Testing, where technicians and the quality department participate in a multi-day process:
+Presentation Script
 
-    Person 1 = “Jane Smith”
-        agent in → Engine Acceptance Test Event
-        She holds the Quality Inspector Role (at some points) or remains a Production Technician (multiple roles over time).
+Slide 1 Script:
 
-    Manufacturer Organization = “Jet Engines Inc.”
-        Also participates in the test event (as the responsible entity).
+"On this first slide, we introduce the Time Ontology—a fundamental module in CCO that lets us represent various temporal intervals like years, months, days, and even parts of a day. In aerospace applications, timing is crucial. For instance, consider an Engine Test Event. This event is scheduled to occur on a specific day, which is part of a designated test month and year. The slide shows how we express these relationships with simple triples: the event ‘occurs on’ a test day, which is ‘contained within’ a test month, and further, that month falls within a test year. We also leverage designative entities to ensure that each time element is precisely described, whether it’s a numeric day, a text-based month, or an integer year."
 
-    Engine Acceptance Test Event
-        Occurs over a multi-day temporal interval
-        Has sub-processes (e.g., “Day 1: Visual Inspection”, “Day 2: Performance Bench Test”)
+Slide 2 Script:
 
-Key Relations
+"Now, let’s drill down into how we represent time in detail. This slide breaks down the structure of our temporal data. For our aerospace example, Test Day 1 is defined by a Temporal Interval Identifier that ‘designates’ the day, and an Information Bearing Entity holds its numeric value—say, ‘15’ for the 15th day. Similarly, we have identifiers for the test month and year, with values such as ‘January’ and ‘2025’. This granular representation is critical because it allows us to resolve imprecise time descriptions. For example, if different sources report an event as happening in ‘Spring 2025’ or on ‘January 15, 2025’, our model can reconcile these into one unified interval."
 
-person 1  --agent in--> engine acceptance test event 1
-engine acceptance test event 1  --occurs on--> multi-day temporal interval 1
+Slide 3 Script:
 
-Name Representation
+"Moving on to the Event Ontology, this module builds on our time representations to model events, actions, and processes. In aerospace, events like an Engine Test or a scheduled Maintenance Event are complex and involve multiple participants. Here, we model an Engine Test Event as a subclass of Process. The event ‘occurs on’ our defined Test Day 1 and involves both an artifact—the jet engine under test—and an agent, such as a test technician. Notice how we use relationships like ‘participates in’ to link the technician to the event. This approach not only captures the event’s timing but also details the roles and interactions of its participants. Additionally, the ontology supports merging multiple, sometimes imprecise, temporal descriptions into one definitive event representation, ensuring our data remains consistent and queryable."
 
-    The day or date (e.g., “2025-06-12”) can be stored as a literal value within a Designative Information Content Entity (for the temporal interval).
-
-Takeaways
-
-    Clear Separation of Entities: A Person is distinct from her Role and from the Organization.
-    Reusable: The same pattern can capture technicians, inspectors, managers, etc., each with different roles.
-    Extensible: Tie into other CCO modules (Time Ontology, Event Ontology) to represent when a role is active and which events the agent participates in.
-
-
-=======================================
-
-
-Slide Title
-
-Quality Ontology: Modeling Attributes and Measurements
-Overview
-
-    The Quality Ontology provides a way to represent attributes (e.g., weight, shape, temperature) of agents, artifacts, and events.
-    These attributes depend on other entities (their bearers).
-    Content extends from BFO’s QUALITY, REALIZABLE ENTITY (dispositions, roles), and PROCESS PROFILE (e.g., speed, frequency).
-
-Key Classes & Examples
-
-    Quality: Basic attribute (e.g., Weight, Temperature, Shape Quality).
-    Realizable Entity: Attributes that are realized in processes, such as Magnetism, Vulnerability, Function.
-    Process Profile: Attributes of a process over time, e.g., Speed, Frequency.
-
-Slide Title
-
-Quality Ontology in Aerospace Manufacturing
-Example 1: Weight of a Jet Engine Component
-
-Imagine a high-pressure turbine blade that has a precise mass requirement.
-
-    Turbine Blade (an artifact)
-        has quality → Blade Weight
-    Blade Weight (Weight)
-        is measured by → Blade Weight Measurement (an Information Content Entity)
-    Measurement Pattern
-        The measurement generically depends on an Information Bearing Entity (e.g., a digital record), which holds:
-            has_integer_value → 2450
-            uses measurement unit → Gram Measurement Unit (subclass of Measurement Unit of Mass)
-
-Key Triples (simplified):
-
-turbine blade 1 - has quality -> weight 1
-weight 1 - is measured by -> weight measurement ICE 1
-weight measurement ICE 1 - generically depends on -> info bearing entity 1
-info bearing entity 1 - has_integer_value -> 2450
-info bearing entity 1 - uses measurement unit -> Gram Measurement Unit
-
-Why It Matters
-
-    Ensures consistent representation of how data is stored (e.g., grams vs. pounds).
-    Simplifies queries that compare or calculate mass values across different units.
-
-Slide Title
-
-Process Profiles: Speed & Frequency
-Example 2: Testing Engine Rotation Speed
-
-    Engine Spin-Up Process
-        A test procedure in which the engine is spun up to a certain RPM.
-    Speed (a subclass of Process Profile)
-        is measured by → e.g., “Rotation Speed Info Entity”
-        That info entity depends on a record with a numeric value + unit (e.g., 10,000 RPM).
-
-Key Triples:
-
-engine spin-up test 1 - has profile -> speed 1
-speed 1 - is measured by -> speed measurement ICE 1
-speed measurement ICE 1 - generically depends on -> info bearing entity 1
-info bearing entity 1 - has_integer_value -> 10000
-info bearing entity 1 - uses measurement unit -> RPM Unit
-
-Benefits
-
-    Cleanly represents changing attributes over time (e.g., speed ramping from 0 to 10,000 RPM).
-    Aligns with other CCO modules (Time Ontology, Event Ontology) to capture when certain threshold speeds are reached.
-
-Slide Title
-
-Key Takeaways from the Quality Ontology
-
-    Attributes Depend on a Bearer
-        Weight, Temperature, Speed are always qualities of something else (person, artifact, or process).
-    Tight Integration with Measurement
-        Each quality can be linked to a Measurement Information Content Entity for numeric data (with units).
-    Flexible & Extensible
-        Capture domain-specific qualities (e.g., Thrust, Vibration Frequency) by subclassing.
-    Crucial for Aerospace
-        Precise specs (mass, speed, temperature) are vital for safety, performance, and compliance.
-
-Additional Note
-
-    The Quality Ontology is most powerful in combination with other CCO modules (Agent, Artifact, Event, Time).
-    Enables interoperable, real-world data modeling for complex aerospace scenarios, ensuring consistent, query-friendly representations of critical attributes (weight, speed, temperature, etc.).
-
-Use these slides to demonstrate how the Quality Ontology helps track and measure important attributes in jet engine manufacturing, from blade weight to rotational speed of spinning parts, all while maintaining semantic clarity and unit consistency.
-
-    Key Benefit: By leveraging CCO’s Agent Ontology patterns, jet-engine manufacturers avoid reinventing the wheel for modeling workforce structure, roles, and organizational contexts—leading to more consistent, interoperable data across production, inspection, and testing activities.
+By following these slides and script points, you can clearly explain how the Time and Event Ontologies work together to model when aerospace events occur and how these events are structured within the CCO framework. This methodology ensures that even complex events like engine tests and maintenance activities are represented in a consistent, interoperable manner.
