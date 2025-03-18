@@ -1,1 +1,41 @@
 
+Agent Ontology: Modeling People, Organizations, and Their Roles
+Key Concepts
+
+    Agent: Top-level class representing both
+        Individual Agents (e.g., Person)
+        Organizational Agents (e.g., Organization)
+    Qualities: Attributes of agents (e.g., HEIGHT, WEIGHT, EYE COLOR)
+    Roles: Context-specific functions an agent performs (e.g., CITIZEN ROLE, OCCUPATION ROLE, ALLY ROLE)
+
+Why It Matters
+
+    Enables precise modeling of who does what and in which organizational context
+    Supports realistic complexity: people can hold multiple roles, organizations can be designated by names, etc.
+    Facilitates linking persons and organizations to events (e.g., a graduation or professional activity)
+
+Example 1 (Figure 5)
+
+    Person 1 (John Doe) has an Occupation Role (Doctor Role)
+    Role is contextualized by an Organization (United Health Systems)
+    Each name (for the person or organization) is a Designative Information Content Entity linking to the text value
+
+Key Relationships
+
+person 1 - has role -> doctor role 1
+doctor role 1 - has organizational context -> healthcare organization 1
+
+Example 2 (Figure 6)
+
+    Person 1 (John Doe) and an Educational Organization (University of Rochester)
+    Both participate in an Act of Educational Training Acquisition over a multi-year interval
+    Graduation Event is a part of that educational process
+
+Key Relationships
+
+person 1 - agent in -> act of educational training acquisition 1
+educational organization 1 - participates in -> act of educational training acquisition 1
+act of educational training acquisition 1 - has process part -> graduation event 1
+
+    Tip: Emphasize how the Agent Ontology integrates seamlessly with Time Ontology and Event Ontology to capture the who, when, and where of real-world processes.
+
