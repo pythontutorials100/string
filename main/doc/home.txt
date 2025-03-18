@@ -1,41 +1,72 @@
+Slide Title
 
-Agent Ontology: Modeling People, Organizations, and Their Roles
+Agent Ontology: Modeling People, Organizations, and Their Roles in Jet Engine Manufacturing
 Key Concepts
 
-    Agent: Top-level class representing both
+    Agent: Top-level class representing:
         Individual Agents (e.g., Person)
-        Organizational Agents (e.g., Organization)
-    Qualities: Attributes of agents (e.g., HEIGHT, WEIGHT, EYE COLOR)
-    Roles: Context-specific functions an agent performs (e.g., CITIZEN ROLE, OCCUPATION ROLE, ALLY ROLE)
+        Organizational Agents (e.g., Manufacturer, Supplier, Subsidiary)
+    Qualities: Attributes of agents (e.g., HEIGHT, WEIGHT, SECURITY CLEARANCE)
+    Roles: Context-specific functions or duties (e.g., ENGINE TECHNICIAN ROLE, SUPERVISOR ROLE, QUALITY INSPECTOR ROLE)
 
-Why It Matters
+Why It Matters (in Aerospace Manufacturing)
 
-    Enables precise modeling of who does what and in which organizational context
-    Supports realistic complexity: people can hold multiple roles, organizations can be designated by names, etc.
-    Facilitates linking persons and organizations to events (e.g., a graduation or professional activity)
+    Capture who performs which tasks on the production line (technicians, inspectors, managers).
+    Link employees’ roles and certifications to the organization (e.g., a specific jet-engine manufacturer).
+    Enable consistent representation of people and teams, ensuring clarity in big projects (e.g., new jet-engine design rollout).
 
-Example 1 (Figure 5)
+Example 1: Agents in Organizational Context
 
-    Person 1 (John Doe) has an Occupation Role (Doctor Role)
-    Role is contextualized by an Organization (United Health Systems)
-    Each name (for the person or organization) is a Designative Information Content Entity linking to the text value
+Imagine a Production Technician working at Jet Engines Inc. to assemble a new X-2000 turbofan engine.
 
-Key Relationships
+    Person 1 (e.g., “Jane Smith”)
+        Has an Occupation Role = Production Technician Role
+    Jet Engines Inc. (an Organization)
+        Linked to the technician’s role via has organizational context
 
-person 1 - has role -> doctor role 1
-doctor role 1 - has organizational context -> healthcare organization 1
+Key CCO Concepts & Relations
 
-Example 2 (Figure 6)
+person 1  --has role--> production technician role 1
+production technician role 1  --has organizational context--> jet engines inc.
 
-    Person 1 (John Doe) and an Educational Organization (University of Rochester)
-    Both participate in an Act of Educational Training Acquisition over a multi-year interval
-    Graduation Event is a part of that educational process
+Name Representation
 
-Key Relationships
+    person name 1 (a Designative Information Content Entity) -> “Jane Smith”
+    organization name 1 -> “Jet Engines Inc.”
 
-person 1 - agent in -> act of educational training acquisition 1
-educational organization 1 - participates in -> act of educational training acquisition 1
-act of educational training acquisition 1 - has process part -> graduation event 1
+Visual: (Slide diagram)
 
-    Tip: Emphasize how the Agent Ontology integrates seamlessly with Time Ontology and Event Ontology to capture the who, when, and where of real-world processes.
+    Show a Person box, linked by “has role” arrow to Production Technician Role, which in turn links by “has organizational context” arrow to Jet Engines Inc..
+    Each name uses “Designative Information Content Entity” and an “Information Bearing Entity” holding the text value (e.g., “Jane Smith”).
 
+Example 2: Agents in a Test Event
+
+Now consider Engine Acceptance Testing, where technicians and the quality department participate in a multi-day process:
+
+    Person 1 = “Jane Smith”
+        agent in → Engine Acceptance Test Event
+        She holds the Quality Inspector Role (at some points) or remains a Production Technician (multiple roles over time).
+
+    Manufacturer Organization = “Jet Engines Inc.”
+        Also participates in the test event (as the responsible entity).
+
+    Engine Acceptance Test Event
+        Occurs over a multi-day temporal interval
+        Has sub-processes (e.g., “Day 1: Visual Inspection”, “Day 2: Performance Bench Test”)
+
+Key Relations
+
+person 1  --agent in--> engine acceptance test event 1
+engine acceptance test event 1  --occurs on--> multi-day temporal interval 1
+
+Name Representation
+
+    The day or date (e.g., “2025-06-12”) can be stored as a literal value within a Designative Information Content Entity (for the temporal interval).
+
+Takeaways
+
+    Clear Separation of Entities: A Person is distinct from her Role and from the Organization.
+    Reusable: The same pattern can capture technicians, inspectors, managers, etc., each with different roles.
+    Extensible: Tie into other CCO modules (Time Ontology, Event Ontology) to represent when a role is active and which events the agent participates in.
+
+    Key Benefit: By leveraging CCO’s Agent Ontology patterns, jet-engine manufacturers avoid reinventing the wheel for modeling workforce structure, roles, and organizational contexts—leading to more consistent, interoperable data across production, inspection, and testing activities.
