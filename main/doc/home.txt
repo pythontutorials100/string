@@ -1,1 +1,3 @@
-
+Document them in the class definitions or annotation properties.
+Represent them via SWRL rules (if you want a reasoner to auto‐decide which part is the reference).
+Or simply apply them in your data‐generation script so that the correct references appear in your RDF.
