@@ -1,1 +1,24 @@
+import pyvista as pv
+
+# Load the STL file
+mesh = pv.read('airfoil.stl')
+
+
+# Create a plotter object
+plotter = pv.Plotter()
+
+# Add the mesh as a wireframe with transparency
+plotter.add_mesh(mesh, color="black", style="wireframe", opacity=0.5)
+
+# Create spheres 
+sphere1 = pv.Sphere(radius=0.9, center=(-15.0364, -2.23418, 53.3702))  # Big red sphere 
+sphere2 = pv.Sphere(radius=0.9, center=(-14.565, -3.372, 66.811))  # Big red sphere 
+# Add spheres to the plotter
+plotter.add_mesh(sphere1, color="red", opacity=1.0)
+plotter.add_mesh(sphere2, color="red", opacity=1.0)
+
+# Show the plot
+plotter.show()
+
+
 
