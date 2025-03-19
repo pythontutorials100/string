@@ -1,79 +1,37 @@
-Slide 1: Time Ontology – Representing When Aerospace Events Occur
+I’ve reviewed the agenda for the 2025 Industrial Digital Ecosystem Summit, and it features several sessions directly relevant to our Ontology and Knowledge Graph Center of Excellence. Specifically:
 
-Slide Content:
+    Knowledge Graph and AI Keynote (Day 1) and multiple talks on ontology applications in industry (e.g., Airbus, TotalEnergies)
+    Ontology in Enterprise Integration and Digital Thread/Digital Twin discussions, which align with our aerospace focus
+    Aerospace Industry Roundtable on the final day, with Airbus, Lockheed Martin, and Boeing sharing use cases and visions relevant to our domain
 
-    Overview of Time Ontology
-        Represents temporal intervals (YEAR, MONTH, DAY, MORNING, MULTI-HOUR INTERVAL).
-        Provides temporal relations (interval disjoint, meets, overlaps, starts) for reasoning.
-        Enables the precise description of when events occur.
+These sessions look valuable for networking, benchmarking, and staying current on best practices around industrial ontologies, knowledge graphs, and digital threads. I recommend we attend to strengthen our expertise and contribute our perspective as an aerospace manufacturer.
 
-    Aerospace Example: Engine Test Event
-        Engine Test Event 1 occurs on Test Day 1.
-        Test Day 1 is part of Test Month 1.
-        Test Month 1 is within Test Year 1.
+Please let me know if you’d like me to register or need any other details.
 
-    Key Relationships (Triples):
-        Engine Test Event 1 – occurs on → Test Day 1
-        Test Day 1 – interval during → Test Month 1
-        Test Month 1 – interval during → Test Year 1
+==========
 
-    Designative Entities:
-        Each date element (day, month, year) is detailed via a Temporal Interval Identifier and linked to an Information Bearing Entity (e.g., numeric day “15”, text “January”, integer “2025”).
+Based on the agenda, a few sessions may be relevant to our work:
 
-Slide 2: Detailed Time Representation in Aerospace
+1. Knowledge Graph and AI Keynote (April 8) – NSF Proto-OKN Project could offer insights into broader AI-driven knowledge graph applications.
 
-Slide Content:
 
-    Detailed Breakdown:
-        Test Day 1:
-            Represented by a Temporal Interval Identifier (e.g., “Day Identifier 1” designates Test Day 1).
-            Information Bearing Entity holds the day’s value (e.g., has_integer_value → 15).
-        Test Month 1:
-            Temporal Interval Identifier for the month (e.g., “Month Identifier 1” designates Test Month 1).
-            Information Bearing Entity holds the month’s value (e.g., has_text_value → “January”).
-        Test Year 1:
-            Temporal Interval Identifier for the year (e.g., “Year Identifier 1” designates Test Year 1).
-            Information Bearing Entity holds the year’s value (e.g., has_integer_value → 2025).
+2. Use of IOF Ontology (April 8) – Airbus’ integration of design and simulation via IOF-driven Semantic Hub aligns with our digital thread and ontology initiatives.
 
-    Note:
-        This structure allows handling both precise and imprecise temporal data.
-        Multiple descriptions (e.g., “Spring 2025” vs. “January 15, 2025”) can be resolved to a single, uniquely defined interval.
 
-Slide 3: Event Ontology – Modeling Aerospace Events
+3. Ontology and AI (April 8) – ManTech’s use of an ontologically-backed digital thread for portfolio analysis may provide useful methodologies.
 
-Slide Content:
 
-    Overview of Event Ontology:
-        Represents events, actions, processes, and states.
-        Defines relationships between participants (agents, artifacts) and temporal intervals.
-        Supports modeling of intentional acts and attribute changes over time.
+4. IOF Architecture WG Meeting (April 9) – Covers ontology development governance, which could inform our best practices.
 
-    Aerospace Example: Engine Test & Maintenance Event
-        Engine Test Event 1 (a subclass of Process)
-            Occurs on Test Day 1.
-            Involves a jet engine (artifact) and a test technician (agent).
-        Triplet Examples:
-            Engine Test Event 1 – rdf → Engine Test (Process subclass)
-            Engine Test Event 1 – occurs on → Test Day 1
-            Test Day 1 – rdf → Day
-            Technician 1 – rdf → Person
-            Technician 1 – participates in → Engine Test Event 1
 
-    Additional Capability:
-        Supports representation of events with imprecise times and merging multiple temporal descriptions into one unified event.
+5. IOF Core/CCO Mapping Workshop (April 11) – Discusses the relationship between CCO and IOF, which may align with our ongoing ontology integration work.
 
-Presentation Script
 
-Slide 1 Script:
+6. Aerospace Industry Roundtable (April 11) – Airbus, Lockheed, and Boeing will discuss ontology use in aerospace, making it a key networking and learning opportunity.
 
-"On this first slide, we introduce the Time Ontology—a fundamental module in CCO that lets us represent various temporal intervals like years, months, days, and even parts of a day. In aerospace applications, timing is crucial. For instance, consider an Engine Test Event. This event is scheduled to occur on a specific day, which is part of a designated test month and year. The slide shows how we express these relationships with simple triples: the event ‘occurs on’ a test day, which is ‘contained within’ a test month, and further, that month falls within a test year. We also leverage designative entities to ensure that each time element is precisely described, whether it’s a numeric day, a text-based month, or an integer year."
 
-Slide 2 Script:
 
-"Now, let’s drill down into how we represent time in detail. This slide breaks down the structure of our temporal data. For our aerospace example, Test Day 1 is defined by a Temporal Interval Identifier that ‘designates’ the day, and an Information Bearing Entity holds its numeric value—say, ‘15’ for the 15th day. Similarly, we have identifiers for the test month and year, with values such as ‘January’ and ‘2025’. This granular representation is critical because it allows us to resolve imprecise time descriptions. For example, if different sources report an event as happening in ‘Spring 2025’ or on ‘January 15, 2025’, our model can reconcile these into one unified interval."
+Let me know if you’d like me to attend or gather insights from any of these.
 
-Slide 3 Script:
-
-"Moving on to the Event Ontology, this module builds on our time representations to model events, actions, and processes. In aerospace, events like an Engine Test or a scheduled Maintenance Event are complex and involve multiple participants. Here, we model an Engine Test Event as a subclass of Process. The event ‘occurs on’ our defined Test Day 1 and involves both an artifact—the jet engine under test—and an agent, such as a test technician. Notice how we use relationships like ‘participates in’ to link the technician to the event. This approach not only captures the event’s timing but also details the roles and interactions of its participants. Additionally, the ontology supports merging multiple, sometimes imprecise, temporal descriptions into one definitive event representation, ensuring our data remains consistent and queryable."
-
-By following these slides and script points, you can clearly explain how the Time and Event Ontologies work together to model when aerospace events occur and how these events are structured within the CCO framework. This methodology ensures that even complex events like engine tests and maintenance activities are represented in a consistent, interoperable manner.
+Best,
+Shatad
