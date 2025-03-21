@@ -1,36 +1,20 @@
-Model-Based Digital Thread PCC
-Mission
+euse of Aerospace Ontology Concepts
 
-Accelerate digital engineering adoption across RTX by coordinating strategy, roadmaps, and best practices.
-Core Responsibilities
+    Pre-Defined Axioms
+        Many aerospace concepts already include logical axioms
+        Allows automated inference of new relationships and insights
 
-    Roadmap & Adoption: Define and guide DE priorities company-wide
-    Standards Alignment: Coordinate internal standards; contribute to industry-wide initiatives
-    Capability Maturation: Evolve DE competencies for Collins, Raytheon, Pratt & Whitney, and others
-    Technology Engagement: Identify and integrate key tools and vendors
+    Consistency Checks
+        Connecting data to these ontology concepts ensures data integrity
+        Identifies conflicts early, reducing errors and rework
 
-Top Priorities
+    Advanced Querying
+        Rich ontological definitions enable complex queries
+        Powers advanced data analytics and application development
 
-    Integrated Digital Collaboration
-    DE Standardization
-    Connected Product Data
+    Accelerated Innovation
+        Leverage proven, domain-specific knowledge rather than starting from scratch
+        Frees teams to focus on value-added activities
 
-Outcome: Faster innovation, reduced duplication, and a unified digital thread that benefits all teams, customers, and suppliers.
-
-
-Our mission is simple: we accelerate digital engineering adoption across RTX by coordinating strategy, roadmaps, and best practices. We do this so every team—from Collins to Raytheon to Pratt & Whitney—can operate more efficiently and consistently.
-
-We focus on four core responsibilities:
-
-    Roadmap & Adoption: We outline and guide the top digital engineering priorities, ensuring everyone’s moving in the same direction.
-    Standards Alignment: We align internal standards and also engage with industry-wide efforts, so we stay ahead of emerging best practices.
-    Capability Maturation: We help each business unit refine and grow their digital engineering skill sets, leveraging shared knowledge and lessons learned.
-    Technology Engagement: We identify and integrate the right tools and vendor partnerships to streamline our digital transformation.
-
-Currently, we have three top priorities:
-
-    Integrated Digital Collaboration – so teams can work seamlessly across geographies and functions.
-    Digital Engineering Standardization – to ensure a common language and consistent processes.
-    Connected Product Data – tying information together across the entire product lifecycle.
-
-The outcome we’re driving toward is faster innovation, reduced duplication, and a unified digital thread that benefits all of our teams, customers, and suppliers. In short, the PCC is about getting everyone on the same page to deliver better results, faster.
+Why Not Reuse?
+You gain immediate benefits from established best practices, saving time, reducing errors, and enabling next-level applications with semantic technologies.
