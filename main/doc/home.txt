@@ -1,12 +1,1 @@
-Overall Context: Why This Presentation Matters
-1.	Digital Transformation & Model-Based Engineering
-o	RTX, like many aerospace and defense companies, is pushing forward with digital transformation. This means adopting model-based approaches to engineering, where designs, requirements, and data are integrated within a unified digital thread.
-o	By having a robust “shared language,” teams can more effectively use digital models to collaborate, exchange information, and make faster, data-driven decisions across the product lifecycle.
-2.	Challenges in Interoperability
-o	Large organizations often deal with fragmented data, multiple standards, and inconsistent definitions. These silos cause rework, confusion, and inefficiency.
-o	Suppliers, OEMs, and customers all need to interact with that data. Without an agreed-upon structure or definitions, data exchange is slow, error-prone, and costly.
-3.	Shared Language & Ontologies
-o	“Shared language” in this context means a common vocabulary, definitions, and relationships—formally defined by an ontology.
-o	Aligning with industry standards like BFO (Basic Formal Ontology), CCO (Common Core Ontology), ISO standards (e.g., 81346, 21838-2), and other frameworks (IOF, OMG, INCOSE) ensures global compatibility and future-proofing.
-4.	MBDT PCC Mission
-o	The Model-Based Digital Thread Process Capability Center (PCC) exists to coordinate strategy, develop roadmaps, align standards, and accelerate the adoption of digital engineering practices across RTX.
+
