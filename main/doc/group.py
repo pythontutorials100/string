@@ -1,1 +1,6 @@
+SELECT ?s ?p ?o
+WHERE {
+  ?s ?p ?o.
+}
+LIMIT 100
 
