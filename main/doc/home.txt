@@ -16,3 +16,21 @@ Top Priorities
     Connected Product Data
 
 Outcome: Faster innovation, reduced duplication, and a unified digital thread that benefits all teams, customers, and suppliers.
+
+
+Our mission is simple: we accelerate digital engineering adoption across RTX by coordinating strategy, roadmaps, and best practices. We do this so every team—from Collins to Raytheon to Pratt & Whitney—can operate more efficiently and consistently.
+
+We focus on four core responsibilities:
+
+    Roadmap & Adoption: We outline and guide the top digital engineering priorities, ensuring everyone’s moving in the same direction.
+    Standards Alignment: We align internal standards and also engage with industry-wide efforts, so we stay ahead of emerging best practices.
+    Capability Maturation: We help each business unit refine and grow their digital engineering skill sets, leveraging shared knowledge and lessons learned.
+    Technology Engagement: We identify and integrate the right tools and vendor partnerships to streamline our digital transformation.
+
+Currently, we have three top priorities:
+
+    Integrated Digital Collaboration – so teams can work seamlessly across geographies and functions.
+    Digital Engineering Standardization – to ensure a common language and consistent processes.
+    Connected Product Data – tying information together across the entire product lifecycle.
+
+The outcome we’re driving toward is faster innovation, reduced duplication, and a unified digital thread that benefits all of our teams, customers, and suppliers. In short, the PCC is about getting everyone on the same page to deliver better results, faster.
