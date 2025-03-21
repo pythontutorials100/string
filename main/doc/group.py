@@ -1,6 +1,7 @@
-SELECT ?s ?p ?o
+CONSTRUCT {
+  ?s ?p ?o.
+}
 WHERE {
   ?s ?p ?o.
 }
 LIMIT 100
-
