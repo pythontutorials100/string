@@ -1,1 +1,18 @@
+Model-Based Digital Thread PCC
+Mission
 
+Accelerate digital engineering adoption across RTX by coordinating strategy, roadmaps, and best practices.
+Core Responsibilities
+
+    Roadmap & Adoption: Define and guide DE priorities company-wide
+    Standards Alignment: Coordinate internal standards; contribute to industry-wide initiatives
+    Capability Maturation: Evolve DE competencies for Collins, Raytheon, Pratt & Whitney, and others
+    Technology Engagement: Identify and integrate key tools and vendors
+
+Top Priorities
+
+    Integrated Digital Collaboration
+    DE Standardization
+    Connected Product Data
+
+Outcome: Faster innovation, reduced duplication, and a unified digital thread that benefits all teams, customers, and suppliers.
