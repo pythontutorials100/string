@@ -21,3 +21,54 @@ White Paper: Prepare a concise version of this proposal for initial submission i
 Budget and Resources: Outline staffing, student/postdoc support (if university partners are involved), software/hardware infrastructure (GPUs for ML training, HPC cluster, data storage).
 
 Engage with Program Managers: Validate alignment with MURI/BAA objectives, clarify any special interest areas, confirm funding mechanics.
+
+
+===================================
+
+Here’s a concise summary of what the topic description is saying:
+
+    Classical Federated Learning Limitations
+
+        A central hub sends its model parameters to many edge devices (sensors/“nodes”).
+
+        Each device trains locally on its own data and sends updates back to the hub to be combined.
+
+        Challenges: high bandwidth and computing costs on the edge devices; the assumption that all local data follows the same distribution isn’t always true.
+
+    Modern Challenges in Communication & Representation
+
+        It’s difficult for nodes to share data if they use different modalities (e.g., images vs. text vs. radar) or face distribution shifts.
+
+        Converting data between modalities (“translating” it) can slow the system and introduce errors.
+
+        Machine learning models (e.g., deep networks) are general function approximators, which can be very expensive to train and share, and might not always produce useful or robust shared representations.
+
+    Need for Semantic Grounding
+
+        Current ML often focuses on model-specific latent spaces (e.g., hidden layers in a neural net) without a “universal” or “conceptual” representation that spans multiple data types.
+
+        Humans naturally form mental models that integrate different sources (visual, language, etc.) under consistent rules (causality, physics, etc.).
+
+        Similarly, an ontology (like a structured “concept map”) could enable machines to encode information from different sources under a shared, meaningful framework.
+
+    Objective
+
+        Develop a flexible ML framework in which data, processes, and models are all embedded into a shared ontology.
+
+        Solve the non-convex, multilevel optimization problem of balancing various system constraints (e.g., accuracy, efficiency, robustness).
+
+        Characterize the structure of the resulting ontology and how it supports communication and learning.
+
+    Research Areas of Interest
+
+        (1) Semantic grounding to build domain-specific ontologies from diverse (multimodal) data.
+
+        (2) Embedding these domain-specific ontologies into a broader, top-level ontology.
+
+        (3) Multi-level optimization for designing a useful ontology in that shared space.
+
+        (4) New ML algorithms that operate effectively in an ontology-centered representation.
+
+        (5) Characterizing ontology components in terms of their properties and roles within the system (involves linguistics, cognitive science, math, ontology engineering, machine learning, physics).
+
+In short, they want a new way to fuse and share information across different sensors and models—using a well-defined ontology so that machines can truly “understand” and integrate data across many modalities. This approach should handle new data types that come along, use less bandwidth than transmitting raw model parameters, and make machine learning more robust and interpretable.
