@@ -1,1 +1,11 @@
-https://cftste.experience.crmforce.mil/arlext/s/baadatabaseentry/a3Ft0000002Y38uEAC/opt0008
+7. Timeline and Milestones
+Phase	Duration	Key Milestones	Deliverables
+1	Year 1	- TLO specification
+- First domain ontologies
+- Data ingestion pipeline	Top-level ontology, domain ontologies, ingestion prototype
+2	Year 2-3	- Cross-domain embedding methods
+- Multi-objective optimization
+- Partial ontology sharing demos	Embedding framework, multi-level optimization toolset, system demos
+3	Year 4-5	- Neuro-symbolic ML integration
+- Active & collaborative sensing module
+- Adversarial resilience tests	Hybrid ML library, robust final system, user interface, final demonstration
