@@ -9,3 +9,15 @@ Phase	Duration	Key Milestones	Deliverables
 3	Year 4-5	- Neuro-symbolic ML integration
 - Active & collaborative sensing module
 - Adversarial resilience tests	Hybrid ML library, robust final system, user interface, final demonstration
+
+=====
+
+Refine the Scope: Confirm specific sensor modalities, scenario use-cases (e.g., object detection from UAV imagery, cross-analysis of textual intelligence with radar tracks, etc.) in consultation with Army TPOCs.
+
+Solidify Team: Identify academic subawardees or internal collaborators for specialized tasks (e.g., top-level ontology design, advanced optimization algorithms).
+
+White Paper: Prepare a concise version of this proposal for initial submission if the solicitation process recommends a white paper.
+
+Budget and Resources: Outline staffing, student/postdoc support (if university partners are involved), software/hardware infrastructure (GPUs for ML training, HPC cluster, data storage).
+
+Engage with Program Managers: Validate alignment with MURI/BAA objectives, clarify any special interest areas, confirm funding mechanics.
