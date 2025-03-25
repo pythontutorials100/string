@@ -1,3 +1,23 @@
+import os
+import stardog
+import pandas as pd
+from dotenv import load_dotenv
+from pandasgui import show
+
+# 1) Load environment variables (if you have them in a .env file)
+load_dotenv()
+
+# 2) Configure Stardog connection details
+conn_details = {
+    'endpoint': 'https://sd-22eb3c93.stardog.cloud:5820',
+    'username': os.getenv('STARDOG_USERNAME'),
+    'password': os.getenv('STARDOG_PASSWORD')
+}
+
+database_name = 'defect'
+
+# 3) Your larger SPARQL query
+SPARQL_QUERY = """
 PREFIX :    <http://api.stardog.com/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
@@ -23,6 +43,7 @@ SELECT
   ?blendPropFactor
   ?blendLoc
   ?blendNodeComp
+FROM <tag:stardog:studio:ibr:model>
 WHERE {
   #############################################################################
   # 1) Find each Airfoil Defect
@@ -44,7 +65,7 @@ WHERE {
   #############################################################################
   ?defect :inheres_in ?defectRegion .
   ?airfoil :has_continuant_part ?defectRegion .
-  
+
   OPTIONAL {
     ?defectRegion :has_continuant_part ?regionPart .
   }
@@ -62,8 +83,6 @@ WHERE {
   #############################################################################
   # 5) Defect Measurements: Index1, Index2, Depth, Length
   #############################################################################
-
-  # -- Index1
   OPTIONAL {
     ?index1MICE rdf:type :Defect_Index1_Distance_to_Datum ;
                 :describes ?defect ;
@@ -72,7 +91,6 @@ WHERE {
     OPTIONAL { ?index1MICE :measured_from_part ?index1DatumPart . }
   }
 
-  # -- Index2
   OPTIONAL {
     ?index2MICE rdf:type :Defect_Index2_Distance_to_Datum ;
                 :describes ?defect ;
@@ -81,7 +99,6 @@ WHERE {
     OPTIONAL { ?index2MICE :measured_from_part ?index2DatumPart . }
   }
 
-  # -- Depth
   OPTIONAL {
     ?depthMICE rdf:type :Defect_Depth ;
                :describes ?defect ;
@@ -89,7 +106,6 @@ WHERE {
     ?depthIBE :has_decimal_value ?depthVal .
   }
 
-  # -- Length
   OPTIONAL {
     ?lengthMICE rdf:type :Defect_Length ;
                 :describes ?defect ;
@@ -105,7 +121,6 @@ WHERE {
                :is_about ?defect .
     OPTIONAL { ?blendProc :has_participant ?blendParticipant . }
 
-    # -- Blend Depth
     OPTIONAL {
       ?blendDepthMICE rdf:type :Blend_On_Edge_Depth_Measurement ;
                        :describes ?blendProc ;
@@ -113,7 +128,6 @@ WHERE {
       ?blendDepthIBE :has_decimal_value ?blendDepth .
     }
 
-    # -- Blend Length
     OPTIONAL {
       ?blendLengthMICE rdf:type :Blend_On_Edge_Length_Measurement ;
                         :describes ?blendProc ;
@@ -121,7 +135,6 @@ WHERE {
       ?blendLengthIBE :has_decimal_value ?blendLength .
     }
 
-    # -- Blend Flat Length
     OPTIONAL {
       ?blendFlatLenMICE rdf:type :Blend_On_Edge_Flat_Length_Measurement ;
                          :describes ?blendProc ;
@@ -129,7 +142,6 @@ WHERE {
       ?blendFlatLenIBE :has_decimal_value ?blendFlatLen .
     }
 
-    # -- Blend Fillet Radius
     OPTIONAL {
       ?blendFilletMICE rdf:type :Blend_On_Edge_Fillet_Radius_Measurement ;
                         :describes ?blendProc ;
@@ -137,7 +149,6 @@ WHERE {
       ?blendFilletIBE :has_decimal_value ?blendFillet .
     }
 
-    # -- Blend Proportional Factor
     OPTIONAL {
       ?blendPropMICE rdf:type :Blend_On_Edge_Proportional_Factor_Measurement ;
                      :describes ?blendProc ;
@@ -145,7 +156,6 @@ WHERE {
       ?blendPropIBE :has_decimal_value ?blendPropFactor .
     }
 
-    # -- Blend Loc
     OPTIONAL {
       ?blendLocMICE rdf:type :Blend_On_Edge_Location_Measurement ;
                     :describes ?blendProc ;
@@ -153,7 +163,6 @@ WHERE {
       ?blendLocIBE :has_decimal_value ?blendLoc .
     }
 
-    # -- Blend Node Component (text code, e.g. LENODES)
     OPTIONAL {
       ?blendNodeCompMICE rdf:type :Blend_On_Edge_Node_Component ;
                          :describes ?blendProc ;
@@ -163,3 +172,47 @@ WHERE {
   }
 }
 ORDER BY ?defect ?blendProc
+"""
+
+def main():
+    # 4) Run the query
+    with stardog.Connection(database_name, **conn_details) as conn:
+        result = conn.select(SPARQL_QUERY)
+
+    # 5) Convert the JSON results to a Pandas DataFrame
+    df_rows = []
+    for row in result["results"]["bindings"]:
+        # We'll gather all the query variables in a dictionary
+        new_row = {
+            "defect": row.get("defect", {}).get("value"),
+            "defectID": row.get("defectID", {}).get("value"),
+            "airfoil": row.get("airfoil", {}).get("value"),
+            "airfoilPartNum": row.get("airfoilPartNum", {}).get("value"),
+            "defectRegion": row.get("defectRegion", {}).get("value"),
+            "regionPart": row.get("regionPart", {}).get("value"),
+            "index1Val": row.get("index1Val", {}).get("value"),
+            "index1DatumPart": row.get("index1DatumPart", {}).get("value"),
+            "index2Val": row.get("index2Val", {}).get("value"),
+            "index2DatumPart": row.get("index2DatumPart", {}).get("value"),
+            "depthVal": row.get("depthVal", {}).get("value"),
+            "lengthVal": row.get("lengthVal", {}).get("value"),
+            "blendProc": row.get("blendProc", {}).get("value"),
+            "blendParticipant": row.get("blendParticipant", {}).get("value"),
+            "blendDepth": row.get("blendDepth", {}).get("value"),
+            "blendLength": row.get("blendLength", {}).get("value"),
+            "blendFlatLen": row.get("blendFlatLen", {}).get("value"),
+            "blendFillet": row.get("blendFillet", {}).get("value"),
+            "blendPropFactor": row.get("blendPropFactor", {}).get("value"),
+            "blendLoc": row.get("blendLoc", {}).get("value"),
+            "blendNodeComp": row.get("blendNodeComp", {}).get("value"),
+        }
+        df_rows.append(new_row)
+
+    df = pd.DataFrame(df_rows)
+    print("\n=== Query Results in DataFrame ===")
+    print(df)
+    show(df)
+
+
+if __name__ == "__main__":
+    main()
