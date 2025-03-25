@@ -1,9 +1,17 @@
-import csv
+PREFIX :    <http://api.stardog.com/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-INPUT_CSV = "extended_defects.csv"  # or whatever your CSV file is named
-
-with open(INPUT_CSV, "r", encoding="utf-8") as f_in:
-    reader = csv.DictReader(f_in)
-    print("Detected headers:", reader.fieldnames)
-    for row in reader:
-        print(row)
+SELECT ?defect ?defectID
+WHERE {
+  # 1) Find every individual typed as an Airfoil_Defect
+  ?defect rdf:type :Airfoil_Defect .
+  
+  # 2) Optionally match its “designative info” that carries a text ID
+  OPTIONAL {
+    ?defectICE rdf:type :Designative_Information_Content_Entity ;
+               :designates ?defect ;
+               :generically_depends_on ?defectIBE .
+    ?defectIBE :has_text_value ?defectID .
+  }
+}
+ORDER BY ?defect
