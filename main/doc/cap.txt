@@ -1,1 +1,31 @@
-How do you see the role of ontologies and knowledge graphs evolving within RTX’s broader Data and AI strategy? Are there plans to systematically integrate these technologies to support enterprise-wide data interoperability and decision-making?
+1. Performance (Business / Functional Objectives)
+
+    Deliver Q2 IBR Distress Ontology enhancements to Pratt & Whitney and AFRL with 100% stakeholder sign-off by June 30.
+
+    Plan and launch BU ontology projects (PWC, Collins) to meet agreed milestones from Q2 to Q4, ensuring on-time delivery for each phase.
+
+    Complete Q1–Q2 legal clearance for the external communication deck and present it to at least one external partner (AFRL or similar) by end of June.
+
+2. Enterprise Leadership (Cross-Functional / Organizational Impact)
+
+    Establish the REO governance board and secure official recognition from data governance stakeholders by end of Q2.
+
+    Obtain REO approval on OHUB with documented governance procedures by September 30.
+
+    Coordinate pre-proposal activities (CRAD, AI/Ontology) with the RTRC AI team, delivering at least one white paper to ARL by Q4.
+
+3. Team Organization & Development (Leadership, Collaboration, Cross-Pollination)
+
+    Create and publish ontology training materials (videos, documentation) and ensure at least 20 team members complete them by Q4.
+
+    Oversee university research collaboration on the digital twin neural network project, conducting quarterly progress reviews to stay on track with funding milestones.
+
+    Support IRAD manufacturing ontology (CCA) by providing weekly guidance and achieving a functional prototype by Q4.
+
+4. Personal Development (Individual Skills & Growth)
+
+    Expand industry engagement by attending and participating in at least two standards bodies events (OMG, OAGi) before year-end.
+
+    Enhance professional network by meeting quarterly with at least one new external stakeholder (e.g., Airbus, Boeing) to exchange best practices on ontology.
+
+    Refine AI/ontology knowledge through self-study and collaboration with RTRC, documenting at least one new learning or tool adoption each quarter.
