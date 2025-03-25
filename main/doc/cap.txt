@@ -1,1 +1,165 @@
-c
+PREFIX :    <http://api.stardog.com/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT
+  ?defect
+  ?defectID
+  ?airfoil
+  ?airfoilPartNum
+  ?defectRegion
+  ?regionPart
+  ?index1Val
+  ?index1DatumPart
+  ?index2Val
+  ?index2DatumPart
+  ?depthVal
+  ?lengthVal
+  ?blendProc
+  ?blendParticipant
+  ?blendDepth
+  ?blendLength
+  ?blendFlatLen
+  ?blendFillet
+  ?blendPropFactor
+  ?blendLoc
+  ?blendNodeComp
+WHERE {
+  #############################################################################
+  # 1) Find each Airfoil Defect
+  #############################################################################
+  ?defect rdf:type :Airfoil_Defect .
+
+  #############################################################################
+  # 2) Get Defect ID (text)
+  #############################################################################
+  OPTIONAL {
+    ?defectICE rdf:type :Designative_Information_Content_Entity ;
+               :designates ?defect ;
+               :generically_depends_on ?defectIBE .
+    ?defectIBE :has_text_value ?defectID .
+  }
+
+  #############################################################################
+  # 3) Defect Region + Region Part + Link to Airfoil
+  #############################################################################
+  ?defect :inheres_in ?defectRegion .
+  ?airfoil :has_continuant_part ?defectRegion .
+  
+  OPTIONAL {
+    ?defectRegion :has_continuant_part ?regionPart .
+  }
+
+  #############################################################################
+  # 4) Airfoil "Part Number" text
+  #############################################################################
+  OPTIONAL {
+    ?partNumICE rdf:type :Part_Number ;
+                :designates ?airfoil ;
+                :generically_depends_on ?partNumIBE .
+    ?partNumIBE :has_text_value ?airfoilPartNum .
+  }
+
+  #############################################################################
+  # 5) Defect Measurements: Index1, Index2, Depth, Length
+  #############################################################################
+
+  # -- Index1
+  OPTIONAL {
+    ?index1MICE rdf:type :Defect_Index1_Distance_to_Datum ;
+                :describes ?defect ;
+                :generically_depends_on ?index1IBE .
+    ?index1IBE :has_decimal_value ?index1Val .
+    OPTIONAL { ?index1MICE :measured_from_part ?index1DatumPart . }
+  }
+
+  # -- Index2
+  OPTIONAL {
+    ?index2MICE rdf:type :Defect_Index2_Distance_to_Datum ;
+                :describes ?defect ;
+                :generically_depends_on ?index2IBE .
+    ?index2IBE :has_decimal_value ?index2Val .
+    OPTIONAL { ?index2MICE :measured_from_part ?index2DatumPart . }
+  }
+
+  # -- Depth
+  OPTIONAL {
+    ?depthMICE rdf:type :Defect_Depth ;
+               :describes ?defect ;
+               :generically_depends_on ?depthIBE .
+    ?depthIBE :has_decimal_value ?depthVal .
+  }
+
+  # -- Length
+  OPTIONAL {
+    ?lengthMICE rdf:type :Defect_Length ;
+                :describes ?defect ;
+                :generically_depends_on ?lengthIBE .
+    ?lengthIBE :has_decimal_value ?lengthVal .
+  }
+
+  #############################################################################
+  # 6) Blend on Edge Process referencing this defect + measurements
+  #############################################################################
+  OPTIONAL {
+    ?blendProc rdf:type :Blend_on_Edge_Process ;
+               :is_about ?defect .
+    OPTIONAL { ?blendProc :has_participant ?blendParticipant . }
+
+    # -- Blend Depth
+    OPTIONAL {
+      ?blendDepthMICE rdf:type :Blend_On_Edge_Depth_Measurement ;
+                       :describes ?blendProc ;
+                       :generically_depends_on ?blendDepthIBE .
+      ?blendDepthIBE :has_decimal_value ?blendDepth .
+    }
+
+    # -- Blend Length
+    OPTIONAL {
+      ?blendLengthMICE rdf:type :Blend_On_Edge_Length_Measurement ;
+                        :describes ?blendProc ;
+                        :generically_depends_on ?blendLengthIBE .
+      ?blendLengthIBE :has_decimal_value ?blendLength .
+    }
+
+    # -- Blend Flat Length
+    OPTIONAL {
+      ?blendFlatLenMICE rdf:type :Blend_On_Edge_Flat_Length_Measurement ;
+                         :describes ?blendProc ;
+                         :generically_depends_on ?blendFlatLenIBE .
+      ?blendFlatLenIBE :has_decimal_value ?blendFlatLen .
+    }
+
+    # -- Blend Fillet Radius
+    OPTIONAL {
+      ?blendFilletMICE rdf:type :Blend_On_Edge_Fillet_Radius_Measurement ;
+                        :describes ?blendProc ;
+                        :generically_depends_on ?blendFilletIBE .
+      ?blendFilletIBE :has_decimal_value ?blendFillet .
+    }
+
+    # -- Blend Proportional Factor
+    OPTIONAL {
+      ?blendPropMICE rdf:type :Blend_On_Edge_Proportional_Factor_Measurement ;
+                     :describes ?blendProc ;
+                     :generically_depends_on ?blendPropIBE .
+      ?blendPropIBE :has_decimal_value ?blendPropFactor .
+    }
+
+    # -- Blend Loc
+    OPTIONAL {
+      ?blendLocMICE rdf:type :Blend_On_Edge_Location_Measurement ;
+                    :describes ?blendProc ;
+                    :generically_depends_on ?blendLocIBE .
+      ?blendLocIBE :has_decimal_value ?blendLoc .
+    }
+
+    # -- Blend Node Component (text code, e.g. LENODES)
+    OPTIONAL {
+      ?blendNodeCompMICE rdf:type :Blend_On_Edge_Node_Component ;
+                         :describes ?blendProc ;
+                         :generically_depends_on ?blendNodeCompIBE .
+      ?blendNodeCompIBE :has_text_value ?blendNodeComp .
+    }
+  }
+}
+ORDER BY ?defect ?blendProc
