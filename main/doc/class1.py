@@ -1,5 +1,3 @@
-#this code inputs csv and json and gives extended csv. working final 
-
 import csv
 import json
 from collections import defaultdict
@@ -32,53 +30,46 @@ def main():
     with open(JSON_INPUT_FILE, mode="r", encoding="utf-8") as f:
         blends_data = json.load(f)
 
-    # The JSON structure is something like:
-    # {
-    #   "blends": {
-    #       "airfoils": {
-    #           "1": [
-    #               { "blend_on_edge": {...} },
-    #               { "blend_on_edge": {...} }
-    #           ],
-    #           "3": [
-    #               { "blend_on_edge": {...} }
-    #           ]
-    #       }
-    #   }
-    # }
+    # 3. Extract the "airfoils" section from the JSON
     airfoils_dict = blends_data["blends"]["airfoils"]
 
-    # 3. Build a lookup that groups blend data by (airfoil_number, edge_node_comp),
-    #    so we can pop them in sequence to match each CSV defect row.
+    # 4. Build a lookup that groups blend data by (airfoil_number, edge_node_comp).
+    #    We'll store each item in a list, so we can pop them in sequence.
     json_map = defaultdict(list)
 
     # Loop over each airfoil number in the JSON
     for airfoil_str, blend_list in airfoils_dict.items():
-        # blend_list is a list of objects like { "blend_on_edge": {...} }
         for blend_item in blend_list:
+            # Some items may have "planar_clip" instead of "blend_on_edge".
+            # We'll skip if "blend_on_edge" is missing.
+            if "blend_on_edge" not in blend_item:
+                # Could log or handle "planar_clip" differently here if needed
+                print(f"Skipping item for airfoil {airfoil_str} "
+                      f"because 'blend_on_edge' key is missing.")
+                continue
+            
             blend_data = blend_item["blend_on_edge"]
-            edge_node_comp = blend_data["edge_node_comp"]
-            # Store in our dictionary under a tuple key (airfoil_str, edge_node_comp)
+            edge_node_comp = blend_data.get("edge_node_comp", "")
             json_map[(airfoil_str, edge_node_comp)].append(blend_data)
 
-    # 4. Merge CSV row by row
+    # 5. Merge CSV row by row
     output_rows = []
     for row in csv_data:
-        # e.g. row["airfoil number"] might be '1'
+        # For example: row["airfoil number"] might be '1'
         airfoil_id = row["airfoil number"].strip()
-        region_value = row["region"].strip().lower()
-        
+        region_value = row["region"].strip()
+
         # Convert CSV 'region' to the JSON's edge_node_comp
         edge_node_comp = region_to_edge_node_comp(region_value)
-        
-        # Try to pop the matching blend data entry
-        # If none is found (or the list is empty), we can either skip or fill with blanks.
+
+        # Attempt to pop the next matching JSON entry
         blend_info = {}
         blend_list_key = (airfoil_id, edge_node_comp)
+
         if blend_list_key in json_map and len(json_map[blend_list_key]) > 0:
             blend_info = json_map[blend_list_key].pop(0)  # get first unused blend
         else:
-            # Provide blank or default values if no matching JSON entry
+            # Provide blank or default values if no matching JSON entry remains
             blend_info = {
                 "fillet_radius": "",
                 "blend_depth": "",
@@ -89,24 +80,21 @@ def main():
                 "edge_node_comp": ""
             }
         
-        # 5. Build the extended row
+        # Build the extended row by merging CSV fields + JSON fields
         extended_row = dict(row)  # start with all original CSV columns
-        # Add the JSON-based keys
-        # (You can add or remove fields as needed; these are from your JSON example)
-        extended_row["fillet_radius"] = blend_info.get("fillet_radius", "")
-        extended_row["blend_depth"]   = blend_info.get("blend_depth", "")
-        extended_row["blend_length"]  = blend_info.get("blend_length", "")
-        extended_row["flat_length"]   = blend_info.get("flat_length", "")
-        extended_row["prop_factor"]   = blend_info.get("prop_factor", "")
-        extended_row["blend_loc"]     = blend_info.get("blend_loc", "")
-        extended_row["edge_node_comp"] = blend_info.get("edge_node_comp", "")
+        extended_row["fillet_radius"]   = blend_info.get("fillet_radius", "")
+        extended_row["blend_depth"]     = blend_info.get("blend_depth", "")
+        extended_row["blend_length"]    = blend_info.get("blend_length", "")
+        extended_row["flat_length"]     = blend_info.get("flat_length", "")
+        extended_row["prop_factor"]     = blend_info.get("prop_factor", "")
+        extended_row["blend_loc"]       = blend_info.get("blend_loc", "")
+        extended_row["edge_node_comp"]  = blend_info.get("edge_node_comp", "")
         
         output_rows.append(extended_row)
 
-    # 6. Determine column order for writing. We'll collect all keys
-    #    from the first extended row for convenience.
+    # 6. Determine column order for writing based on the first extended row
     if not output_rows:
-        print("No rows found in CSV input. Exiting.")
+        print("No rows found in CSV input. Exiting without writing output.")
         return
     
     fieldnames = list(output_rows[0].keys())
@@ -121,4 +109,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
