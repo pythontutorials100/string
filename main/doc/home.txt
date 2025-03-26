@@ -1,35 +1,218 @@
-Ontology: High-Level Benefits
-1. Unified Structure for Complex Data
+import pyvista as pv
+import numpy as np
 
-    We blend data from multiple formats (CSV, JSON) into a single knowledge graph.
+##############################################################################
+#                              User Inputs
+##############################################################################
 
-    The ontology standardizes how we name and relate concepts (defects, blends, measurements).
+# Conversion factor
+m_to_in = 39.3701
 
-2. Better Insights & Analytics
+# Coordinates of the reference spheres (yellow), in meters
+reference_spheres = {
+    "top_front":    (-14.5649, -3.372,    66.8014),
+    "bottom_front": (-15.3724,  0.108056, 17.3466),
+    "top_back":     ( 21.6716,  5.41146,  66.6593),
+    "bottom_back":  ( 22.2777,  0.75596,  17.4064),
+}
 
-    Consistent modeling enables richer queries: e.g. find all airfoil defects deeper than X inches on the leading edge.
+# Distances along the top→bottom front vector (meters)
+index1Val = 14.0
+index2Val = 17.0
 
-    Measurement entities (ICE/MICE) and domain-specific classes let us slice data by dimension, location, etc.
+# Horizontal depth in +X (meters)
+depthVal = 1.5
 
-3. Greater Interoperability
+# STL file to visualize
+stl_file = "airfoil.stl"
 
-    Built on BFO & CCO: recognized frameworks that support cross-domain integration.
+##############################################################################
+#                           Position Calculations
+##############################################################################
 
-    Aligns with best practices, making it easier to extend or link to other ontologies or enterprise systems.
+datum_pos = np.array(reference_spheres["top_front"])
 
-4. Reduced Data Silos
+# Vector from top front to bottom front (direction of red spheres)
+vec_down = np.array(reference_spheres["bottom_front"]) - datum_pos
+unit_vec_down = vec_down / np.linalg.norm(vec_down)
 
-    Instead of separate CSV/JSON spreadsheets, data becomes centrally accessible in a knowledge graph.
+# Red spheres placed along the vector direction
+pos_red1 = datum_pos + unit_vec_down * index1Val
+pos_red2 = datum_pos + unit_vec_down * index2Val
 
-    Automated scripts populate the graph, ensuring data is kept up-to-date and consistent across teams.
+# Red sphere #3 (midpoint in depth direction)
+mid_z = (pos_red1[2] + pos_red2[2]) / 2.0
+pos_red3 = np.array([datum_pos[0] + depthVal, datum_pos[1], mid_z])
 
-5. Scalability & Maintenance
+##############################################################################
+#                         Distances & Line Positions
+##############################################################################
 
-    Ontology-driven approach allows easier updates: new defect types or blend parameters can be added without breaking existing data.
+dist1 = np.linalg.norm(pos_red1 - datum_pos)
+dist2 = np.linalg.norm(pos_red2 - datum_pos)
 
-    Clear definitions and relationships make the system maintainable over time.
+arrow_depth_start = np.array([datum_pos[0], datum_pos[1], mid_z])
+arrow_depth_end   = np.array([datum_pos[0] + depthVal, datum_pos[1], mid_z])
 
-Enables Cross-Source Integration:
-“By using a common, semantically rich structure, this ontology unifies data across different sources—allowing us to discover new insights and perform advanced analytics that weren’t possible when the data existed in separate silos.”
+# Offset lines in -X direction
+offset_1 = np.array([-3.0, 0.0, 0.0])
+offset_2 = np.array([-6.0, 0.0, 0.0])
+
+line1_start = pos_red1 + offset_1
+line1_end   = datum_pos + offset_1
+
+line2_start = pos_red2 + offset_2
+line2_end   = datum_pos + offset_2
+
+##############################################################################
+#                         Create PyVista Objects
+##############################################################################
+
+mesh = pv.read(stl_file)
+
+# Red spheres
+sphere1 = pv.Sphere(radius=0.6, center=pos_red1)
+sphere2 = pv.Sphere(radius=0.6, center=pos_red2)
+sphere3 = pv.Sphere(radius=0.6, center=pos_red3)
+
+# Measurement lines (no arrows)
+line_v1 = pv.Line(line1_start, line1_end)
+line_v2 = pv.Line(line2_start, line2_end)
+line_depth = pv.Line(arrow_depth_start, arrow_depth_end)
+
+##############################################################################
+#                               Plotter
+##############################################################################
+
+plotter = pv.Plotter()
+
+# Solid STL mesh
+plotter.add_mesh(mesh, color="lightgray", opacity=1.0)
+
+# Reference spheres (yellow)
+for label, center in reference_spheres.items():
+    sphere = pv.Sphere(radius=0.3, center=center)
+    plotter.add_mesh(sphere, color="yellow", opacity=1.0)
+    plotter.add_point_labels([center], [label.replace("_", " ").title()], font_size=10, point_color="black")
+
+# Red spheres
+plotter.add_mesh(sphere1, color="red")
+plotter.add_mesh(sphere2, color="red")
+plotter.add_mesh(sphere3, color="red")
+
+# Measurement lines
+plotter.add_mesh(line_v1, color="blue", line_width=5)
+plotter.add_mesh(line_v2, color="green", line_width=5)
+plotter.add_mesh(line_depth, color="magenta", line_width=5)
+
+##############################################################################
+#                                Labels (in inches / 2000)
+##############################################################################
+
+# Midpoints for labels
+txt_pos_v1 = (line1_start + line1_end) / 2
+txt_pos_v2 = (line2_start + line2_end) / 2
+txt_pos_depth = (arrow_depth_start + arrow_depth_end) / 2
+
+# Distances in inches
+dist1_in = dist1 * m_to_in
+dist2_in = dist2 * m_to_in
+depth_in = depthVal * m_to_in
+
+# Divide values by 2000 for display
+dist1_display = dist1_in / 2000
+dist2_display = dist2_in / 2000
+depth_display = depth_in / 2000
+
+# Determine shorter/farther
+if dist1_in < dist2_in:
+    short_pos, short_val = txt_pos_v1, dist1_display
+    far_pos, far_val     = txt_pos_v2, dist2_display
+else:
+    short_pos, short_val = txt_pos_v2, dist2_display
+    far_pos, far_val     = txt_pos_v1, dist1_display
+
+# Add formatted labels
+plotter.add_point_labels(
+    [short_pos],
+    [f"Shortest distance to datum = {short_val:.2f} in"],
+    font_size=12,
+    point_color="black"
+)
+plotter.add_point_labels(
+    [far_pos],
+    [f"Farthest distance to datum = {far_val:.2f} in"],
+    font_size=12,
+    point_color="black"
+)
+plotter.add_point_labels(
+    [txt_pos_depth],
+    [f"Depth = {depth_display:.2f} in"],
+    font_size=12,
+    point_color="black"
+)
 
 
+
+##############################################################################
+#                           Reversed Camera View Buttons
+##############################################################################
+
+def set_xy_view(flag):
+    plotter.camera.position = (0, 0, 150)
+    plotter.camera.focal_point = (0, 0, 0)
+    plotter.camera.up = (0, 1, 0)
+    plotter.render()
+
+def set_yz_view(flag):
+    plotter.camera.position = (-100, 0, 50)
+    plotter.camera.focal_point = (0, 0, 50)
+    plotter.camera.up = (0, 0, 1)
+    plotter.render()
+
+def set_xz_view(flag):
+    plotter.camera.position = (0, -100, 50)
+    plotter.camera.focal_point = (0, 0, 50)
+    plotter.camera.up = (0, 0, 1)
+    plotter.render()
+
+plotter.add_checkbox_button_widget(set_xy_view, value=False, position=(10, 50))
+plotter.add_text("XY", position=(25, 50), font_size=5, color="black")
+
+plotter.add_checkbox_button_widget(set_yz_view, value=False, position=(10, 100))
+plotter.add_text("YZ", position=(25, 100), font_size=5, color="black")
+
+plotter.add_checkbox_button_widget(set_xz_view, value=False, position=(10, 150))
+plotter.add_text("XZ", position=(25, 150), font_size=5, color="black")
+
+# Table text (ASCII format with updated heading)
+table_text = (
+    "+----------------------------------------------------+----------+\n"
+    "| :airfoil_defect1 (defectID: \"1\"): Blend Information         |\n"
+    "+----------------------------------------------------+----------+\n"
+    "| Individuals                                        | Value    |\n"
+    "+----------------------------------------------------+----------+\n"
+    "|  ├─ Fillet Radius (Blend On Edge Fillet Radius)    | 0        |\n"
+    "|  ├─ Depth (Blend On Edge Depth Measurement)        | 0.095    |\n"
+    "|  ├─ Length (Blend On Edge Length Measurement)      | 0.238    |\n"
+    "|  ├─ Flat Length (Blend On Edge Flat Length Meas.)  | 0.125    |\n"
+    "|  ├─ Proportional Factor (Blend On Edge Proportional| 2        |\n"
+    "|  │    Factor Measurement)                          |          |\n"
+    "|  ├─ Location (Blend On Edge Location Measurement)  | -0.285   |\n"
+    "|  └─ Node Component (Blend On Edge Node Component)  | LENODES  |\n"
+    "+----------------------------------------------------+----------+"
+)
+
+# Add the ASCII table as text overlay in bottom-right
+plotter.add_text(
+    table_text,
+    position="lower_right",
+    font_size=10,
+    color="black",
+    font="courier"  # monospaced font to preserve table formatting
+)
+
+
+
+
+plotter.show()
