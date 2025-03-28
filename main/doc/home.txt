@@ -1,1 +1,65 @@
+Thanks for the update — this is a great opportunity to align efforts and share value across teams.
+
+Hello Luis, 
+
+We’ve developed and curated a core enterprise ontology called REO (RTX Enterprise Ontology), grounded in formal logic using OWL. REO is based on the ISO-standard foundational ontology BFO (Basic Formal Ontology).
+
+REO includes reusable modeling patterns for:
+
+Information modeling
+
+Quality modeling
+
+Temporal modeling
+
+Financial value modeling
+
+Material traceability modeling
+
+And more. 
+
+Portion of these could be reused. REO is formal logic-based and support rich reasoning and inferencing capabilities.
+
+I'd be also be very interested in understanding your approach to extracting OWL ontologies from Cameo models, and how that work can be shared and integrated into O-hub. 
+
+Here is a link to O-hub: 
+
+I’ll share a short presentation ahead of the meeting to provide some background.
+
+I've sent a meeting invite for Monday at 3 PM ET.
+
+
+==============
+
+Purpose:
+Informational and alignment session on ontology assets and integration opportunities.
+
+Agenda:
+
+    Overview of REO and standards base (BFO, CCO)
+
+    Review of your Cameo-to-OWL approach and use case
+
+    O-hub access and governance overview
+
+    Identify fit and next steps
+
+
+Agenda:
+
+    REO overview and standards base (BFO, CCO)
+
+    Walkthrough of your Cameo-to-OWL work and use case
+
+    O-hub sharing and governance
+
+    Identify fit, opportunities, and next steps
+
+
+
+Introduce REO and our existing ontology assets; understand how the Air Force modeling effort can align and contribute to O-hub.
+
+Agenda:
+
+
 
