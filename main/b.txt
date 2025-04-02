@@ -1,0 +1,24 @@
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix voc: <http://example.org/voc/> .
+@prefix : <http://example.org/base/> . # Base prefix for the mapping resources themselves
+
+<#StudentMapping>
+    rr:logicalTable [ rr:sqlQuery """
+        SELECT s_id, first_name, last_name FROM student
+    """ ];
+
+    rr:subjectMap [
+        rr:template "http://example.org/voc/student/{s_id}";
+        rr:class voc:Student;
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate foaf:firstName;
+        rr:objectMap [ rr:column "first_name" ];
+    ];
+
+    rr:predicateObjectMap [
+        rr:predicate foaf:lastName;
+        rr:objectMap [ rr:column "last_name" ];
+    ].
