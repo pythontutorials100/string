@@ -1,10 +1,9 @@
-[MappingDeclaration] @collection [[
-mappingId     StudentMapping
-target        <http://example.org/student/{s_id}> a <http://example.org/voc/Student> ; <http://xmlns.com/foaf/0.1/firstName> "{first_name}"^^xsd:string ; <http://xmlns.com/foaf/0.1/lastName> "{last_name}"^^xsd:string .
-source        SELECT s_id, first_name, last_name FROM student
-]]
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX voc: <http://example.org/voc/>
 
-[PrefixDeclaration]
-xsd:    <http://www.w3.org/2001/XMLSchema#>
-foaf:   <http://xmlns.com/foaf/0.1/>
-:       <http://example.org/voc/>
+SELECT ?student_uri ?firstName ?lastName
+WHERE {
+  ?student_uri a voc:Student ;
+         foaf:firstName ?firstName ;
+         foaf:lastName ?lastName .
+}
