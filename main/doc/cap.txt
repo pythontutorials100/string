@@ -1,414 +1,460 @@
-# -*- coding: utf-8 -*-
-import sys
-import requests
-import os
-import pandas as pd
-from dotenv import load_dotenv
-import pyvista as pv
-import numpy as np
-from PyQt5 import QtWidgets, QtCore, QtGui
-from PyQt5.QtWidgets import (QSplitter, QHeaderView, QAbstractItemView, QMessageBox,
-                             QLineEdit, QPushButton, QVBoxLayout, QWidget, QFrame,
-                             QGroupBox, QHBoxLayout, QLabel, QTableWidget)
-from pyvistaqt import QtInteractor
-import traceback
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive KG - Controlled Individual Placement</title>
+    <!-- 1. Include vis.js library -->
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style type="text/css">
+        body { font-family: sans-serif; } /* Added for consistency */
+        #mynetwork {
+            width: 95%;
+            height: 700px;
+            border: 1px solid lightgray;
+            margin: 10px;
+        }
+        button {
+            margin: 5px;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            vertical-align: middle;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+            cursor: pointer;
+        }
+        button:disabled { cursor: not-allowed; opacity: 0.5; }
+        button:hover:not(:disabled) { background-color: #e0e0e0; }
+        #controls {
+             padding: 5px;
+             border-bottom: 1px solid #ccc;
+             margin-bottom: 10px;
+             display: flex;
+             align-items: center;
+        }
+        /* Style for SPARQL query display (added for completeness if you add it later) */
+        #sparqlQueryDisplay {
+            margin: 15px 10px;
+            padding: 10px;
+            border: 1px dashed #aaa;
+            background-color: #f9f9f9;
+            font-family: monospace;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        #sparqlQueryDisplay h3 {
+            margin-top: 0; font-family: sans-serif; font-size: 1em;
+            font-weight: bold; color: #333;
+        }
+    </style>
+</head>
+<body>
 
-# --- GraphDB Configuration and Credentials ---
-load_dotenv()
-username = os.getenv('username'); password = os.getenv('password')
-graphdb_url = "http://localhost:7200"; repo_name = "defect"
-endpoint = f"{graphdb_url}/repositories/{repo_name}"
-graphdb_auth = (username, password) if username and password else None
+<!-- Title Removed -->
 
-# --- Constants and Setup ---
-stl_file = "airfoil.stl"
-VISUALIZATION_SCALE_FACTOR = 19.0809 # Converts 'inch' inputs to meters for plotting
+<div id="controls">
+    <button id="showDefect1Btn" title="Show Defect 1" disabled></button>
+    <button id="showDefect2Btn" title="Show Defect 2" disabled></button>
+    <button id="highlightQueryBtn" title="Highlight Defect 2 Length" disabled></button>
+</div>
 
-# Coordinates of the reference spheres (METERS)
-reference_spheres = {
-    "top_front":    (-14.5649, -3.372,    66.8014),
-    "bottom_front": (-15.3724,  0.108056, 17.3466),
-    "top_back":     ( 21.6716,  5.41146,  66.6593),
-    "bottom_back":  ( 22.2777,  0.75596,  17.4064),
-}
-pos_top_front    = np.array(reference_spheres["top_front"])
-pos_bottom_front = np.array(reference_spheres["bottom_front"])
-pos_top_back     = np.array(reference_spheres["top_back"])
+<div id="mynetwork"></div>
 
-# --- Helper Functions ---
-def clean_uri(uri):
-    if not isinstance(uri, str): return None
-    # Prioritize # first, then /
-    if '#' in uri: return uri.split('#')[-1]
-    elif '/' in uri: return uri.split('/')[-1]
-    else: return uri
-def safe_float_convert(value, default=0.0):
-    if value is None or value == '': return default
-    try: return float(value)
-    except (ValueError, TypeError): print(f"Warning: Could not convert '{value}' to float."); return default
+<!-- Optional: Placeholder for SPARQL query -->
+<!-- <div id="sparqlQueryDisplay" style="display: none;"> -->
+<!--     <h3>SPARQL Query for Highlighted Path:</h3> -->
+<!--     <code id="sparqlCode"></code> -->
+<!-- </div> -->
 
-# <<< MODIFIED get_defect_info >>>
-def get_defect_info(target_defect_id: str, endpoint: str, auth: tuple = None) -> pd.DataFrame | None:
-    """ Queries GraphDB for defect info, including the type of the datum part. """
-    if not target_defect_id: print("Error: No target defect ID provided."); return None
 
-    # SPARQL Query - Added ?index1DatumPartType
-    query = f"""
-    PREFIX :    <http://api.stardog.com/>
-    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+<script type="text/javascript">
+    // --- User Defined Colors ---
+    const CLASS_COLOR_FILL = '#F0A30A'; // Orange-Yellow
+    const CLASS_COLOR_BORDER = '#B8860B';
+    const INDIVIDUAL_COLOR_FILL = '#76608A'; // Purple
+    const INDIVIDUAL_COLOR_BORDER = '#4A3C5A';
+    const LITERAL_COLOR_FILL = '#D5E8D4'; // Light Green
+    const LITERAL_COLOR_BORDER = '#82B366';
 
-    SELECT
-      ?defect ?defectID ?airfoil ?airfoilPartNum ?defectRegion ?regionPart
-      ?index1Val ?index1DatumPart ?index1DatumPartType # <-- Added Type
-      ?index2Val ?index2DatumPart # Assuming index2 uses the same datum part
-      ?depthVal ?lengthVal
-      ?blendProc ?blendParticipant ?blendDepth ?blendLength ?blendFlatLen
-      ?blendFillet ?blendPropFactor ?blendLoc ?blendNodeComp
-    WHERE {{
-      ?defect rdf:type :Airfoil_Defect .
-      ?defectICE rdf:type :Designative_Information_Content_Entity ;
-                 :designates ?defect ; :generically_depends_on ?defectIBE .
-      ?defectIBE :has_text_value ?defectID .
-      FILTER (?defectID = "{target_defect_id}")
-
-      OPTIONAL {{ ?defect :inheres_in ?defectRegion . ?airfoil :has_continuant_part ?defectRegion . }}
-      OPTIONAL {{ ?defectRegion :has_continuant_part ?regionPart . }}
-      OPTIONAL {{ ?partNumICE rdf:type :Part_Number ; :designates ?airfoil ; :generically_depends_on ?partNumIBE . ?partNumIBE :has_text_value ?airfoilPartNum . }}
-
-      # Get Index 1 info, datum part, AND datum part type
-      OPTIONAL {{
-        ?index1MICE rdf:type :Defect_Index1_Distance_to_Datum ;
-                    :describes ?defect ;
-                    :generically_depends_on ?index1IBE .
-        ?index1IBE :has_decimal_value ?index1Val .
-        OPTIONAL {{
-            ?index1MICE :measured_from_part ?index1DatumPart .
-            # Get the type of the datum part
-            OPTIONAL {{ ?index1DatumPart rdf:type ?index1DatumPartType . }} # <-- Added pattern
-        }}
-      }}
-
-      # Get Index 2 info (assuming same datum part for simplicity, adjust if needed)
-      OPTIONAL {{
-        ?index2MICE rdf:type :Defect_Index2_Distance_to_Datum ;
-                    :describes ?defect ;
-                    :generically_depends_on ?index2IBE .
-        ?index2IBE :has_decimal_value ?index2Val .
-         OPTIONAL {{ ?index2MICE :measured_from_part ?index2DatumPart . }} # Still useful to know if it's specified
-      }}
-
-      # Depth and Length
-      OPTIONAL {{ ?depthMICE rdf:type :Defect_Depth ; :describes ?defect ; :generically_depends_on ?depthIBE . ?depthIBE :has_decimal_value ?depthVal . }}
-      OPTIONAL {{ ?lengthMICE rdf:type :Defect_Length ; :describes ?defect ; :generically_depends_on ?lengthIBE . ?lengthIBE :has_decimal_value ?lengthVal . }}
-
-      # Blend Process details (remain the same)
-      OPTIONAL {{
-        ?blendProc rdf:type :Blend_on_Edge_Process ; :is_about ?defect .
-        OPTIONAL {{ ?blendProc :has_participant ?blendParticipant . }}
-        OPTIONAL {{ ?blendDepthMICE rdf:type :Blend_On_Edge_Depth_Measurement ; :describes ?blendProc ; :generically_depends_on ?blendDepthIBE . ?blendDepthIBE :has_decimal_value ?blendDepth . }}
-        OPTIONAL {{ ?blendLengthMICE rdf:type :Blend_On_Edge_Length_Measurement ; :describes ?blendProc ; :generically_depends_on ?blendLengthIBE . ?blendLengthIBE :has_decimal_value ?blendLength . }}
-        OPTIONAL {{ ?blendFlatLenMICE rdf:type :Blend_On_Edge_Flat_Length_Measurement ; :describes ?blendProc ; :generically_depends_on ?blendFlatLenIBE . ?blendFlatLenIBE :has_decimal_value ?blendFlatLen . }}
-        OPTIONAL {{ ?blendFilletMICE rdf:type :Blend_On_Edge_Fillet_Radius_Measurement ; :describes ?blendProc ; :generically_depends_on ?blendFilletIBE . ?blendFilletIBE :has_decimal_value ?blendFillet . }}
-        OPTIONAL {{ ?blendPropMICE rdf:type :Blend_On_Edge_Proportional_Factor_Measurement ; :describes ?blendProc ; :generically_depends_on ?blendPropIBE . ?blendPropIBE :has_decimal_value ?blendPropFactor . }}
-        OPTIONAL {{ ?blendLocMICE rdf:type :Blend_On_Edge_Location_Measurement ; :describes ?blendProc ; :generically_depends_on ?blendLocIBE . ?blendLocIBE :has_decimal_value ?blendLoc . }}
-        OPTIONAL {{ ?blendNodeCompMICE rdf:type :Blend_On_Edge_Node_Component ; :describes ?blendProc ; :generically_depends_on ?blendNodeCompIBE . ?blendNodeCompIBE :has_text_value ?blendNodeComp . }}
-      }}
-    }} ORDER BY ?defect ?blendProc
-    """
-    headers = {"Accept": "application/sparql-results+json"}; post_data = {"query": query}
-    try: response = requests.post(endpoint, data=post_data, headers=headers, auth=auth); response.raise_for_status()
-    except requests.exceptions.RequestException as e: print(f"Error connecting to GraphDB: {e}"); return None
-    try:
-        results = response.json(); data = []
-        bindings = results.get("results", {}).get("bindings", [])
-        if not bindings: print(f"No defect found with ID: {target_defect_id}"); return pd.DataFrame()
-        for result in bindings:
-            # Extract data including the new type field
-            row = {
-                "Defect": clean_uri(result.get("defect", {}).get("value")),
-                "Defect ID": result.get("defectID", {}).get("value", ""),
-                "Airfoil": clean_uri(result.get("airfoil", {}).get("value")),
-                "Airfoil Part Num": result.get("airfoilPartNum", {}).get("value", ""),
-                "Defect Region": clean_uri(result.get("defectRegion", {}).get("value")),
-                "Region Part": clean_uri(result.get("regionPart", {}).get("value", "")),
-                "Index1 Val": result.get("index1Val", {}).get("value", ""),
-                "Index1 Datum Part": clean_uri(result.get("index1DatumPart", {}).get("value")),
-                "Index1 Datum Part Type": clean_uri(result.get("index1DatumPartType", {}).get("value")), # <-- Get Type Name
-                "Index2 Val": result.get("index2Val", {}).get("value", ""),
-                "Index2 Datum Part": clean_uri(result.get("index2DatumPart", {}).get("value")),
-                "Depth Val": result.get("depthVal", {}).get("value", ""),
-                "Length Val": result.get("lengthVal", {}).get("value", ""),
-                "Blend Process": clean_uri(result.get("blendProc", {}).get("value", "")),
-                "Blend Participant": clean_uri(result.get("blendParticipant", {}).get("value", "")),
-                "Blend Depth": result.get("blendDepth", {}).get("value", ""),
-                "Blend Length": result.get("blendLength", {}).get("value", ""),
-                "Blend Flat Len": result.get("blendFlatLen", {}).get("value", ""),
-                "Blend Fillet": result.get("blendFillet", {}).get("value", ""),
-                "Blend Prop Factor": result.get("blendPropFactor", {}).get("value", ""),
-                "Blend Loc": result.get("blendLoc", {}).get("value", ""),
-                "Blend Node Comp": result.get("blendNodeComp", {}).get("value", "")
+    // --- Prefixes and Shorten Function (Unchanged) ---
+    const prefixes = {
+        "pw": "http://prattwhitney.com/ontology#", // Added pw prefix mapping
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "xsd": "http://www.w3.org/2001/XMLSchema#"
+    };
+    function shorten(uriOrLiteral) {
+        if (typeof uriOrLiteral !== 'string') return String(uriOrLiteral);
+        const literalMatch = uriOrLiteral.match(/^(.*)\^\^(.*)$/);
+        if (literalMatch) {
+            const value = JSON.stringify(literalMatch[1]);
+            let datatype = literalMatch[2];
+             // Attempt to shorten datatype as well
+            for (const prefix in prefixes) {
+                const uri = prefixes[prefix];
+                 if (datatype.startsWith(uri)) {
+                    datatype = prefix + ":" + datatype.substring(uri.length);
+                    break; // Stop after first match
+                 }
+             }
+             if (datatype === literalMatch[2]) { // If not shortened by prefix, get last part
+                const parts = datatype.split(/[#/]/);
+                datatype = parts[parts.length - 1] || datatype;
+             }
+            return `${value}^^${datatype}`;
+        }
+         // Shorten URI
+        for (const prefix in prefixes) {
+            const uri = prefixes[prefix];
+            if (uriOrLiteral.startsWith(uri)) {
+                return prefix + ":" + uriOrLiteral.substring(uri.length);
             }
-            data.append(row)
-        return pd.DataFrame(data)
-    except Exception as e: print(f"Error processing results: {e}"); return None
-
-##############################################################################
-#                                PyQt Main Window
-##############################################################################
-
-class MainWindow(QtWidgets.QMainWindow):
-    # --- __init__ method (UI setup) remains the same ---
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setWindowTitle("Airfoil Defect Visualization")
-        self.setGeometry(100, 100, 1400, 900)
-        self.defect_data = None
-        self.defect_actors = []
-        self._initialize_defect_params()
-        # UI Layout
-        main_widget = QWidget(); self.setCentralWidget(main_widget); main_layout = QHBoxLayout(main_widget)
-        self.splitter = QSplitter(QtCore.Qt.Horizontal); main_layout.addWidget(self.splitter)
-        plotter_frame = QFrame(); plotter_frame.setFrameShape(QFrame.StyledPanel); plotter_layout = QVBoxLayout(plotter_frame)
-        plotter_layout.setContentsMargins(0,0,0,0); self.plotter = QtInteractor(plotter_frame, auto_update=False)
-        plotter_layout.addWidget(self.plotter.interactor); self.splitter.addWidget(plotter_frame)
-        controls_widget = QWidget(); controls_layout = QVBoxLayout(controls_widget); self.splitter.addWidget(controls_widget)
-        input_group = QGroupBox("Load Defect"); input_layout = QHBoxLayout(input_group)
-        self.defect_id_input = QLineEdit(); self.defect_id_input.setPlaceholderText("Enter Defect ID")
-        self.load_button = QPushButton("Load & Visualize"); self.load_button.clicked.connect(self.load_and_update_defect)
-        input_layout.addWidget(QLabel("Defect ID:")); input_layout.addWidget(self.defect_id_input); input_layout.addWidget(self.load_button)
-        controls_layout.addWidget(input_group)
-        view_buttons_group = QGroupBox("Camera Views"); view_buttons_layout = QVBoxLayout(view_buttons_group)
-        btn_iso = QPushButton("Isometric View"); btn_xy = QPushButton("XY View"); btn_yz = QPushButton("YZ View"); btn_xz = QPushButton("XZ View")
-        btn_iso.clicked.connect(self.set_iso_view); btn_xy.clicked.connect(self.set_xy_view); btn_yz.clicked.connect(self.set_yz_view); btn_xz.clicked.connect(self.set_xz_view)
-        view_buttons_layout.addWidget(btn_iso); view_buttons_layout.addWidget(btn_xy); view_buttons_layout.addWidget(btn_yz); view_buttons_layout.addWidget(btn_xz)
-        controls_layout.addWidget(view_buttons_group)
-        self.index_depth_table_group = QGroupBox("Defect Location Parameters"); index_depth_table_layout = QVBoxLayout(self.index_depth_table_group)
-        self.index_depth_table = QTableWidget(); index_depth_table_layout.addWidget(self.index_depth_table); controls_layout.addWidget(self.index_depth_table_group)
-        self.blend_table_group = QGroupBox("Blend Parameters"); blend_table_layout = QVBoxLayout(self.blend_table_group)
-        self.blend_table = QTableWidget(); blend_table_layout.addWidget(self.blend_table); controls_layout.addWidget(self.blend_table_group)
-        controls_layout.addStretch()
-        self.splitter.setSizes([900, 400]); self.splitter.setStretchFactor(0, 1); self.splitter.setStretchFactor(1, 0)
-        self._setup_base_plot(); self._update_display()
+        }
+        const parts = uriOrLiteral.split(/[#/]/);
+        return parts[parts.length - 1] || uriOrLiteral;
+     }
 
 
-    # <<< MODIFIED _initialize_defect_params >>>
-    def _initialize_defect_params(self):
-        """ Sets default values for defect parameters. """
-        self.airfoil_part_num = "N/A"; self.defect_id_loaded = "N/A"; self.defect_title = "Blend Info"
-        # Add datum tracking
-        self.datum_part = "N/A" # Store the name fetched from SPARQL
-        self.datum_part_type_name = "N/A" # Store the TYPE name fetched from SPARQL
-        self.datum_type = "Unknown" # Store 'Tip', 'Edge', or 'Unknown'
-        # Raw input values
-        self.indexVal1_input = 0.0; self.indexVal2_input = 0.0; self.depthVal_input = 0.0
-        # Blend parameters
-        self.blend_fillet_radius = 0.0; self.blend_depth = 0.0; self.blend_length = 0.0
-        self.blend_flat_length = 0.0; self.blend_proportional_factor = 0.0; self.blend_location = 0.0
-        self.blend_node_component = ""
-        # Calculated visualization values (initialize in meter scale)
-        self.pos_red1, self.pos_red2, self.pos_red3 = [pos_top_front] * 3
-        self.short_label = "Index 1: N/A in"; self.far_label = "Index 2: N/A in"; self.depth_label = "Depth: N/A in"
-        self.arrow_depth_start, self.arrow_depth_end = [pos_top_front] * 2
-        self.line1_start, self.line1_end = [pos_top_front] * 2
-        self.line2_start, self.line2_end = [pos_top_front] * 2
-        self.txt_pos_v1, self.txt_pos_v2, self.txt_pos_depth = [pos_top_front] * 3
+    // --- Data Preparation (Unchanged from your provided code) ---
+    const initialClassNodes = [ /* ... */
+        { id: "pw:MaterialArtifact", label: shorten("http://prattwhitney.com/ontology#MaterialArtifact"), group: "class" },
+        { id: "pw:FiatObjectPart", label: shorten("http://prattwhitney.com/ontology#FiatObjectPart"), group: "class" },
+        { id: "pw:Quality", label: shorten("http://prattwhitney.com/ontology#Quality"), group: "class" },
+        { id: "pw:InformationContentEntity", label: shorten("http://prattwhitney.com/ontology#InformationContentEntity"), group: "class" },
+        { id: "pw:InformationBearingEntity", label: shorten("http://prattwhitney.com/ontology#InformationBearingEntity"), group: "class" },
+        { id: "pw:MeasurementUnit", label: shorten("http://prattwhitney.com/ontology#MeasurementUnit"), group: "class" },
+        { id: "pw:Airfoil", label: shorten("http://prattwhitney.com/ontology#Airfoil"), group: "class" },
+        { id: "pw:Defect", label: shorten("http://prattwhitney.com/ontology#Defect"), group: "class" },
+        { id: "pw:AirfoilDefect", label: shorten("http://prattwhitney.com/ontology#AirfoilDefect"), group: "class" },
+        { id: "pw:DefectRegion", label: shorten("http://prattwhitney.com/ontology#DefectRegion"), group: "class" },
+        { id: "pw:LeadingEdge", label: shorten("http://prattwhitney.com/ontology#LeadingEdge"), group: "class" },
+        { id: "pw:DistanceMeasurementInformationContentEntity", label: shorten("http://prattwhitney.com/ontology#DistanceMeasurementInformationContentEntity"), group: "class" },
+        { id: "pw:DefectDepth", label: shorten("http://prattwhitney.com/ontology#DefectDepth"), group: "class" },
+        { id: "pw:DefectLength", label: shorten("http://prattwhitney.com/ontology#DefectLength"), group: "class" },
+        { id: "pw:MeasurementUnitOfLength", label: shorten("http://prattwhitney.com/ontology#MeasurementUnitOfLength"), group: "class" },
+    ];
+    const subClassEdges_Initial = [ /* ... */
+        { from: "pw:Airfoil", to: "pw:MaterialArtifact"}, { from: "pw:DefectRegion", to: "pw:FiatObjectPart"},
+        { from: "pw:LeadingEdge", to: "pw:FiatObjectPart"}, { from: "pw:Defect", to: "pw:Quality"},
+        { from: "pw:AirfoilDefect", to: "pw:Defect"}, { from: "pw:DistanceMeasurementInformationContentEntity", to: "pw:InformationContentEntity"},
+        { from: "pw:MeasurementUnitOfLength", to: "pw:MeasurementUnit"}, { from: "pw:DefectDepth", to: "pw:DistanceMeasurementInformationContentEntity" },
+        { from: "pw:DefectLength", to: "pw:DistanceMeasurementInformationContentEntity" },
+    ].map(e => ({ ...e, label: shorten("rdfs:subClassOf"), arrows: "to", color: { color: 'darkgrey', inherit: false }, dashes: [5, 5] }));
+
+    const nodes_D1 = [ /* ... */
+        { id: "pw:airfoil1", label: shorten("pw:airfoil1"), group: "individual" }, { id: "pw:leading_edge1", label: shorten("pw:leading_edge1"), group: "individual" },
+        { id: "pw:defect1_region", label: shorten("pw:defect1_region"), group: "individual" }, { id: "pw:airfoil_defect1", label: shorten("pw:airfoil_defect1"), group: "individual" },
+        { id: "pw:Defect1_Depth_MICE", label: shorten("pw:D1_Depth_MICE"), group: "individual" }, { id: "pw:Defect1_Length_MICE", label: shorten("pw:D1_Length_MICE"), group: "individual" },
+        { id: "pw:Defect1_Depth_IBE", label: shorten("pw:D1_Depth_IBE"), group: "individual" }, { id: "pw:Defect1_Length_IBE", label: shorten("pw:D1_Length_IBE"), group: "individual" },
+        { id: "pw:inch_unit", label: shorten("pw:inch_unit"), group: "individual" },
+        { id: "lit:D1_0.092", label: shorten('"0.092"^^http://www.w3.org/2001/XMLSchema#decimal'), group: "literal" },
+        { id: "lit:D1_0.249", label: shorten('"0.249"^^http://www.w3.org/2001/XMLSchema#decimal'), group: "literal" },
+    ];
+    const typeEdges_D1 = [ /* ... */
+        { from: "pw:airfoil1", to: "pw:Airfoil" }, { from: "pw:leading_edge1", to: "pw:LeadingEdge" }, { from: "pw:defect1_region", to: "pw:DefectRegion" },
+        { from: "pw:airfoil_defect1", to: "pw:AirfoilDefect" }, { from: "pw:Defect1_Depth_MICE", to: "pw:DefectDepth" }, { from: "pw:Defect1_Length_MICE", to: "pw:DefectLength" },
+        { from: "pw:Defect1_Depth_IBE", to: "pw:InformationBearingEntity" }, { from: "pw:Defect1_Length_IBE", to: "pw:InformationBearingEntity" }, { from: "pw:inch_unit", to: "pw:MeasurementUnitOfLength" },
+    ].map(e => ({ ...e, label: shorten("rdf:type"), arrows: "to", color: { color: '#FF8C00', inherit: false } }));
+    const relationEdges_D1 = [ /* ... */
+        { from: "pw:airfoil1", to: "pw:leading_edge1", label: shorten("pw:hasContinuantPart") }, { from: "pw:airfoil1", to: "pw:defect1_region", label: shorten("pw:hasContinuantPart") },
+        { from: "pw:airfoil_defect1", to: "pw:defect1_region", label: shorten("pw:inheresIn") }, { from: "pw:Defect1_Depth_MICE", to: "pw:airfoil_defect1", label: shorten("pw:describes") },
+        { from: "pw:Defect1_Depth_MICE", to: "pw:Defect1_Depth_IBE", label: shorten("pw:genericallyDependsOn") }, { from: "pw:Defect1_Length_MICE", to: "pw:airfoil_defect1", label: shorten("pw:describes") },
+        { from: "pw:Defect1_Length_MICE", to: "pw:Defect1_Length_IBE", label: shorten("pw:genericallyDependsOn") }, { from: "pw:Defect1_Depth_IBE", to: "lit:D1_0.092", label: shorten("pw:hasDecimalValue") },
+        { from: "pw:Defect1_Depth_IBE", to: "pw:inch_unit", label: shorten("pw:usesMeasurementUnit") }, { from: "pw:Defect1_Length_IBE", to: "lit:D1_0.249", label: shorten("pw:hasDecimalValue") },
+        { from: "pw:Defect1_Length_IBE", to: "pw:inch_unit", label: shorten("pw:usesMeasurementUnit") },
+    ].map(e => ({ ...e, arrows: "to", color: { color: '#663399', inherit: false } }));
+
+    const nodes_D2 = [ /* ... */
+        { id: "pw:defect2_region", label: shorten("pw:defect2_region"), group: "individual" }, { id: "pw:airfoil_defect2", label: shorten("pw:airfoil_defect2"), group: "individual" },
+        { id: "pw:Defect2_Depth_MICE", label: shorten("pw:D2_Depth_MICE"), group: "individual" }, { id: "pw:Defect2_Length_MICE", label: shorten("pw:D2_Length_MICE"), group: "individual" },
+        { id: "pw:Defect2_Depth_IBE", label: shorten("pw:D2_Depth_IBE"), group: "individual" }, { id: "pw:Defect2_Length_IBE", label: shorten("pw:D2_Length_IBE"), group: "individual" },
+        { id: "lit:D2_0.110", label: shorten('"0.110"^^http://www.w3.org/2001/XMLSchema#decimal'), group: "literal" },
+        { id: "lit:D2_0.199", label: shorten('"0.199"^^http://www.w3.org/2001/XMLSchema#decimal'), group: "literal" },
+    ];
+    const typeEdges_D2 = [ /* ... */
+        { from: "pw:defect2_region", to: "pw:DefectRegion" }, { from: "pw:airfoil_defect2", to: "pw:AirfoilDefect" }, { from: "pw:Defect2_Depth_MICE", to: "pw:DefectDepth" },
+        { from: "pw:Defect2_Length_MICE", to: "pw:DefectLength" }, { from: "pw:Defect2_Depth_IBE", to: "pw:InformationBearingEntity" }, { from: "pw:Defect2_Length_IBE", to: "pw:InformationBearingEntity" },
+    ].map(e => ({ ...e, label: shorten("rdf:type"), arrows: "to", color: { color: '#FF8C00', inherit: false } }));
+    const relationEdges_D2 = [ /* ... */
+        { from: "pw:airfoil1", to: "pw:defect2_region", label: shorten("pw:hasContinuantPart") }, { from: "pw:airfoil_defect2", to: "pw:defect2_region", label: shorten("pw:inheresIn") },
+        { from: "pw:Defect2_Depth_MICE", to: "pw:airfoil_defect2", label: shorten("pw:describes") }, { from: "pw:Defect2_Depth_MICE", to: "pw:Defect2_Depth_IBE", label: shorten("pw:genericallyDependsOn") },
+        { from: "pw:Defect2_Length_MICE", to: "pw:airfoil_defect2", label: shorten("pw:describes") }, { from: "pw:Defect2_Length_MICE", to: "pw:Defect2_Length_IBE", label: shorten("pw:genericallyDependsOn") },
+        { from: "pw:Defect2_Depth_IBE", to: "lit:D2_0.110", label: shorten("pw:hasDecimalValue") }, { from: "pw:Defect2_Depth_IBE", to: "pw:inch_unit", label: shorten("pw:usesMeasurementUnit") },
+        { from: "pw:Defect2_Length_IBE", to: "lit:D2_0.199", label: shorten("pw:hasDecimalValue") }, { from: "pw:Defect2_Length_IBE", to: "pw:inch_unit", label: shorten("pw:usesMeasurementUnit") },
+    ].map(e => ({ ...e, arrows: "to", color: { color: '#663399', inherit: false } }));
+
+    const highlightNodeIds = [ /* ... */
+        "pw:airfoil_defect2", "pw:Defect2_Length_MICE", "pw:Defect2_Length_IBE", "lit:D2_0.199"
+    ];
+     const highlightEdgeConnections = [ /* ... */
+         { from: "pw:Defect2_Length_MICE", to: "pw:airfoil_defect2", label: "describes" }, { from: "pw:Defect2_Length_MICE", to: "pw:Defect2_Length_IBE", label: "genericallyDependsOn" },
+         { from: "pw:Defect2_Length_IBE", to: "lit:D2_0.199", label: "hasDecimalValue" }, { from: "pw:airfoil_defect2", to: "pw:AirfoilDefect", label: "type" },
+         { from: "pw:Defect2_Length_MICE", to: "pw:DefectLength", label: "type" }, { from: "pw:Defect2_Length_IBE", to: "pw:InformationBearingEntity", label: "type" }
+     ];
+    // --- SPARQL Query String (Optional - Add if needed) ---
+    // const sparqlQueryDefect2Length = `...`;
 
 
-    # <<< MODIFIED load_and_update_defect >>>
-    def load_and_update_defect(self):
-        """Fetches defect data, determines datum type FROM DATUM PART TYPE, and updates visualization."""
-        target_id = self.defect_id_input.text().strip()
-        if not target_id: QMessageBox.warning(self, "Input Error", "Please enter a Defect ID."); return
-        print(f"Querying for Defect ID: {target_id}...")
-        app_instance = QtWidgets.QApplication.instance();
-        if app_instance: app_instance.setOverrideCursor(QtCore.Qt.WaitCursor)
-        self.defect_data = None
+    // --- 3. Setup vis.js Network ---
+    const container = document.getElementById('mynetwork');
+    const showDefect1Btn = document.getElementById('showDefect1Btn');
+    const showDefect2Btn = document.getElementById('showDefect2Btn');
+    const highlightQueryBtn = document.getElementById('highlightQueryBtn');
+    // const sparqlQueryDisplayDiv = document.getElementById('sparqlQueryDisplay'); // Uncomment if using
+    // const sparqlCodeElement = document.getElementById('sparqlCode'); // Uncomment if using
 
-        try:
-            defect_df = get_defect_info(target_id, endpoint, graphdb_auth)
-            if defect_df is None: QMessageBox.critical(self, "Query Error", "Failed to query GraphDB."); self._initialize_defect_params()
-            elif defect_df.empty: QMessageBox.information(self, "Not Found", f"No data found for Defect ID: {target_id}"); self._initialize_defect_params()
-            else:
-                self.defect_data = defect_df.iloc[0].to_dict(); print("Defect data loaded successfully.")
-                # --- Extract Data (including Datum Part and its TYPE) ---
-                self.airfoil_part_num = self.defect_data.get("Airfoil Part Num", "N/A")
-                self.defect_id_loaded = self.defect_data.get("Defect ID", "N/A")
-                self.datum_part = self.defect_data.get("Index1 Datum Part", "N/A")
-                self.datum_part_type_name = self.defect_data.get("Index1 Datum Part Type", "N/A") # <-- Get TYPE name
+    const nodes = new vis.DataSet();
+    const edges = new vis.DataSet();
 
-                # Raw values
-                self.indexVal1_input = safe_float_convert(self.defect_data.get("Index1 Val"))
-                self.indexVal2_input = safe_float_convert(self.defect_data.get("Index2 Val"))
-                self.depthVal_input = safe_float_convert(self.defect_data.get("Depth Val"))
-                # Blend values
-                self.blend_fillet_radius = safe_float_convert(self.defect_data.get("Blend Fillet"))
-                self.blend_depth = safe_float_convert(self.defect_data.get("Blend Depth"))
-                self.blend_length = safe_float_convert(self.defect_data.get("Blend Length"))
-                self.blend_flat_length = safe_float_convert(self.defect_data.get("Blend Flat Len"))
-                self.blend_proportional_factor = safe_float_convert(self.defect_data.get("Blend Prop Factor"))
-                self.blend_location = safe_float_convert(self.defect_data.get("Blend Loc"))
-                self.blend_node_component = self.defect_data.get("Blend Node Comp", "")
+    nodes.add(initialClassNodes);
+    edges.add(subClassEdges_Initial);
 
-                # --- Determine Datum Type BASED ON TYPE NAME ---
-                if self.datum_part_type_name and "tip" in self.datum_part_type_name.lower():
-                    self.datum_type = "Tip"
-                # Check for various edge types (adjust keywords if needed for your ontology)
-                elif self.datum_part_type_name and any(edge_kw in self.datum_part_type_name.lower() for edge_kw in ["edge", "le", "te"]):
-                    self.datum_type = "Edge"
-                else:
-                    self.datum_type = "Unknown"
-                    print(f"Warning: Could not determine datum category from part type '{self.datum_part_type_name}'. Defaulting to Tip logic.")
-                    # Default to Tip if type is missing or unrecognized
-                    self.datum_type = "Tip"
+    const data = { nodes: nodes, edges: edges };
+    const initialClassNodeIds = initialClassNodes.map(n => n.id);
 
-        except Exception as e: print(f"Error loading/processing data: {e}\n{traceback.format_exc()}"); QMessageBox.critical(self, "Error", f"An unexpected error occurred: {e}"); self._initialize_defect_params()
-        finally:
-            if app_instance: app_instance.restoreOverrideCursor()
-        self._update_display()
+    const initialOptions = { // Options for the initial hierarchical layout
+        layout: {
+            hierarchical: {
+                enabled: true, direction: "UD", sortMethod: "directed",
+                levelSeparation: 150, nodeSpacing: 130, treeSpacing: 200
+            }
+        },
+        physics: {
+            enabled: true, // Physics needed for hierarchical layout to run
+            hierarchicalRepulsion: {
+                 centralGravity: 0.1, springLength: 120, springConstant: 0.01,
+                 nodeDistance: 150, damping: 0.09
+            },
+            minVelocity: 0.75,
+            solver: 'hierarchicalRepulsion', // Use solver compatible with hierarchical
+            stabilization: { // Stabilization options for initial layout
+                 enabled: true, iterations: 1000, updateInterval: 50,
+                 onlyDynamicEdges: false, fit: true
+            }
+        },
+        interaction: { hover: true, tooltipDelay: 200, navigationButtons: true },
+        nodes: { font: { size: 12, face: 'tahoma' }, borderWidth: 2 },
+        edges: { width: 1.5, font: { size: 9, align: 'middle' }, smooth: { enabled: false } }, // Straight edges often better for hierarchical
+        groups: {
+             class: { color: { background: CLASS_COLOR_FILL, border: CLASS_COLOR_BORDER }, shape: 'box' },
+             individual: { color: { background: INDIVIDUAL_COLOR_FILL, border: INDIVIDUAL_COLOR_BORDER }, shape: 'ellipse' },
+             literal: { color: { background: LITERAL_COLOR_FILL, border: LITERAL_COLOR_BORDER }, shape: 'circle', font: { size: 10 } }
+         }
+    };
 
+    // Store calculated start position globally or pass it appropriately
+    let calculatedStartX = 0;
+    let calculatedStartY = 0;
 
-    # --- _calculate_visualization_data remains the same (uses self.datum_type) ---
-    def _calculate_visualization_data(self):
-        datum_origin = pos_top_front
-        if self.datum_type == "Edge":
-            print("Calculating for EDGE datum.")
-            vec_direction = pos_top_back - datum_origin
-            depth_vector = np.array([0.0, 1.0, 0.0]) # Example: Depth along +Y
-        else: # Tip or Unknown
-            if self.datum_type != "Tip": print("Defaulting to TIP datum calculation.")
-            vec_direction = pos_bottom_front - datum_origin
-            depth_vector = np.array([1.0, 0.0, 0.0]) # Depth along +X
-        norm_vec_direction = np.linalg.norm(vec_direction)
-        if norm_vec_direction < 1e-6: unit_vec_direction = np.array([0.0, -1.0, 0.0]) # Default fallback
-        else: unit_vec_direction = vec_direction / norm_vec_direction
-        index1_dist_m = self.indexVal1_input * VISUALIZATION_SCALE_FACTOR
-        index2_dist_m = self.indexVal2_input * VISUALIZATION_SCALE_FACTOR
-        depth_dist_m = self.depthVal_input * VISUALIZATION_SCALE_FACTOR
-        self.pos_red1 = datum_origin + unit_vec_direction * index1_dist_m
-        self.pos_red2 = datum_origin + unit_vec_direction * index2_dist_m
-        mid_point_on_vec = (self.pos_red1 + self.pos_red2) / 2.0
-        self.pos_red3 = mid_point_on_vec + depth_vector * depth_dist_m
-        self.short_label = f"Index 1 = {self.indexVal1_input:.3f} in"; self.far_label = f"Index 2 = {self.indexVal2_input:.3f} in"; self.depth_label = f"Depth = {self.depthVal_input:.3f} in"
-        self.arrow_depth_start = mid_point_on_vec; self.arrow_depth_end = self.pos_red3
-        offset_1 = np.array([-5.0, 0.0, 0.0]); offset_2 = np.array([-10.0, 0.0, 0.0])
-        self.line1_start = self.pos_red1 + offset_1; self.line1_end = datum_origin + offset_1
-        self.line2_start = self.pos_red2 + offset_2; self.line2_end = datum_origin + offset_2
-        self.txt_pos_v1 = (self.line1_start + self.line1_end) / 2; self.txt_pos_v2 = (self.line2_start + self.line2_end) / 2; self.txt_pos_depth = (self.arrow_depth_start + self.arrow_depth_end) / 2
+    const network = new vis.Network(container, data, initialOptions); // Use initial options
 
+    // --- 4. Logic to Fix Class Positions & Enable Buttons ---
+    network.once("stabilizationIterationsDone", function () {
+        console.log("Initial Class layout stabilization complete.");
+        const classPositions = network.getPositions(initialClassNodeIds);
+        const classUpdates = [];
+        let minY = Infinity, maxY = -Infinity, minX = Infinity, maxX = -Infinity;
 
-    # --- _setup_base_plot remains the same ---
-    def _setup_base_plot(self):
-        self.plotter.clear(); self.plotter.enable_anti_aliasing('fxaa')
-        try: self.airfoil_mesh = pv.read(stl_file); self.plotter.add_mesh(self.airfoil_mesh, color="lightgray", opacity=1.0)
-        except FileNotFoundError: QMessageBox.critical(self, "File Error", f"Cannot find STL file: {stl_file}"); self.airfoil_mesh = pv.Sphere(); self.plotter.add_mesh(self.airfoil_mesh, color="red")
-        for label, center in reference_spheres.items():
-            sphere = pv.Sphere(radius=0.3, center=center); self.plotter.add_mesh(sphere, color="yellow", opacity=1.0, name=f"ref_{label}")
-            self.plotter.add_point_labels([center + np.array([0,0,0.5])], [label.replace("_", " ").title()], font_size=10, text_color="white", point_color="yellow", shape=None, always_visible=False, name=f"ref_label_{label}")
-        self.plotter.add_axes(interactive=True); self.set_iso_view()
-
-
-    # --- _update_plot remains the same ---
-    def _update_plot(self):
-        for actor in self.defect_actors:
-            try: self.plotter.remove_actor(actor, render=False)
-            except Exception: pass
-        self.defect_actors.clear()
-        if self.defect_data is not None:
-            try:
-                sphere1=pv.Sphere(radius=0.6,center=self.pos_red1); sphere2=pv.Sphere(radius=0.6,center=self.pos_red2); sphere3=pv.Sphere(radius=0.6,center=self.pos_red3)
-                self.defect_actors.append(self.plotter.add_mesh(sphere1,color="red",name="defect_sphere1",render=False))
-                self.defect_actors.append(self.plotter.add_mesh(sphere2,color="red",name="defect_sphere2",render=False))
-                self.defect_actors.append(self.plotter.add_mesh(sphere3,color="red",name="defect_sphere3",render=False))
-                line_v1=pv.Line(self.line1_start,self.line1_end); line_v2=pv.Line(self.line2_start,self.line2_end); line_depth=pv.Line(self.arrow_depth_start,self.arrow_depth_end)
-                self.defect_actors.append(self.plotter.add_mesh(line_v1,color="cyan",line_width=5,name="line_index1",render=False))
-                self.defect_actors.append(self.plotter.add_mesh(line_v2,color="lime",line_width=5,name="line_index2",render=False))
-                self.defect_actors.append(self.plotter.add_mesh(line_depth,color="magenta",line_width=5,name="line_depth",render=False))
-                label_actor1=self.plotter.add_point_labels([self.txt_pos_v1],[self.short_label],font_size=12,text_color="cyan",shape=None,always_visible=True,name="label_index1",render=False)
-                if label_actor1: self.defect_actors.append(label_actor1)
-                label_actor2=self.plotter.add_point_labels([self.txt_pos_v2],[self.far_label],font_size=12,text_color="lime",shape=None,always_visible=True,name="label_index2",render=False)
-                if label_actor2: self.defect_actors.append(label_actor2)
-                label_actor3=self.plotter.add_point_labels([self.txt_pos_depth],[self.depth_label],font_size=12,text_color="magenta",shape=None,always_visible=True,name="label_depth",render=False)
-                if label_actor3: self.defect_actors.append(label_actor3)
-            except Exception as e: print(f"Error adding defect viz actors: {e}\n{traceback.format_exc()}"); self.defect_actors.clear()
-        print(f"Rendering plot. {len(self.defect_actors)} defect actors present (Datum Type: {self.datum_type}).") # Added type to print
-        self.plotter.render()
-
-
-    # <<< MODIFIED _update_index_depth_table >>>
-    def _update_index_depth_table(self):
-        """ Updates the index/depth table, adding datum part TYPE info. """
-        table = self.index_depth_table; table.clearContents()
-        title = f"Airfoil: {self.airfoil_part_num} | Defect ID: {self.defect_id_loaded}"
-        self.index_depth_table_group.setTitle(title)
-
-        # Add Datum Part *Type* to the data
-        data = {
-            "Datum Part": self.datum_part, # Instance name (e.g., le21)
-            "Datum Part Type": self.datum_part_type_name, # Type name (e.g., Leading_Edge)
-            "Detected Datum": self.datum_type, # Interpreted type (Tip/Edge/Unknown)
-            "Index 1": f"{self.indexVal1_input:.3f}",
-            "Index 2": f"{self.indexVal2_input:.3f}",
-            "Depth": f"{self.depthVal_input:.3f}",
+        for (const nodeId in classPositions) {
+            if (initialClassNodeIds.includes(nodeId)) {
+                const pos = classPositions[nodeId];
+                classUpdates.push({ id: nodeId, fixed: { x: true, y: true }, physics: false });
+                // Find bounds of fixed nodes
+                if (pos.y < minY) minY = pos.y;
+                if (pos.y > maxY) maxY = pos.y;
+                if (pos.x < minX) minX = pos.x;
+                if (pos.x > maxX) maxX = pos.x;
+            }
         }
 
-        table.setColumnCount(2); table.setRowCount(len(data))
-        table.setHorizontalHeaderLabels(["Location Parameter", "Value"])
-        header = table.horizontalHeader(); header.setSectionResizeMode(0, QHeaderView.Stretch); header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
-        font = header.font(); font.setBold(True); header.setFont(font); header.setStyleSheet("QHeaderView::section { background-color: #E8E8E8; padding: 4px; border: 1px solid #C0C0C0; }")
-        row = 0
-        for key, value in data.items():
-            param_item = QtWidgets.QTableWidgetItem(key)
-            # Add units only to numeric index/depth values
-            value_text = f"{value} in" if key in ["Index 1", "Index 2", "Depth"] else str(value)
-            value_item = QtWidgets.QTableWidgetItem(value_text)
-            align = QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter if key in ["Index 1", "Index 2", "Depth"] else QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter
-            value_item.setTextAlignment(align)
-            param_item.setFlags(param_item.flags() ^ QtCore.Qt.ItemIsEditable); value_item.setFlags(value_item.flags() ^ QtCore.Qt.ItemIsEditable)
-            table.setItem(row, 0, param_item); table.setItem(row, 1, value_item); row += 1
-        table.verticalHeader().setVisible(False); table.resizeRowsToContents(); table.setAlternatingRowColors(True)
+        if (classUpdates.length > 0) {
+             nodes.update(classUpdates);
+             console.log(`Fixed positions for ${classUpdates.length} initial class nodes.`);
+             // Calculate starting position for the *first* set of individuals
+             calculatedStartX = (minX + maxX) / 2; // Center X below classes
+             calculatedStartY = maxY + 180; // Position below the lowest class node + buffer
+             console.log(`Calculated initial position for D1 individuals: X=${calculatedStartX.toFixed(2)}, Y=${calculatedStartY.toFixed(2)}`);
+        } else {
+            console.warn("No class nodes found to fix or calculate position from.");
+            // Fallback position if needed
+            calculatedStartX = container.offsetWidth / 2;
+            calculatedStartY = 200;
+        }
 
+        showDefect1Btn.disabled = false; // Enable first button
 
-    # --- _update_blend_table remains the same ---
-    def _update_blend_table(self):
-        table = self.blend_table; table.clearContents(); self.blend_table_group.setTitle("Blend Parameters")
-        params_with_units = ["Fillet Radius", "Blend Depth", "Blend Length", "Flat Length", "Location"]
-        data = { "Fillet Radius": f"{self.blend_fillet_radius:.3f}", "Blend Depth": f"{self.blend_depth:.3f}", "Blend Length": f"{self.blend_length:.3f}", "Flat Length": f"{self.blend_flat_length:.3f}", "Proportional Factor": f"{self.blend_proportional_factor:.3f}", "Location": f"{self.blend_location:.3f}", "Node Component": f"{self.blend_node_component}" }
-        table.setColumnCount(2); table.setRowCount(len(data)); table.setHorizontalHeaderLabels(["Blend Parameter", "Value"])
-        header = table.horizontalHeader(); header.setSectionResizeMode(0, QHeaderView.Stretch); header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
-        font = header.font(); font.setBold(True); header.setFont(font); header.setStyleSheet("QHeaderView::section { background-color: #E8E8E8; padding: 4px; border: 1px solid #C0C0C0; }")
-        row = 0
-        for key, value in data.items():
-            param_item = QtWidgets.QTableWidgetItem(key); value_text = f"{value} in" if key in params_with_units else value
-            if key == "Node Component" and not self.blend_node_component: value_text = "N/A"
-            value_item = QtWidgets.QTableWidgetItem(value_text); value_item.setTextAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
-            param_item.setFlags(param_item.flags() ^ QtCore.Qt.ItemIsEditable); value_item.setFlags(value_item.flags() ^ QtCore.Qt.ItemIsEditable)
-            table.setItem(row, 0, param_item); table.setItem(row, 1, value_item); row += 1
-        table.verticalHeader().setVisible(False); table.resizeRowsToContents(); table.setAlternatingRowColors(True)
+        // NOW switch layout options AFTER fixing classes and calculating start positions
+        network.setOptions({
+            layout: { hierarchical: false }, // Turn off hierarchical
+            physics: {
+                enabled: true, // Keep physics enabled
+                solver: 'barnesHut', // Switch to BarnesHut
+                barnesHut: { // Configure BarnesHut
+                    gravitationalConstant: -15000, // Standard repulsion
+                    centralGravity: 0.1,        // Slight pull to center
+                    springLength: 130,          // Resting edge length
+                    springConstant: 0.04,       // Edge stiffness
+                    damping: 0.1,               // Slow down movement
+                    avoidOverlap: 0.2           // Prevent nodes overlapping (adjust 0 to 1)
+                },
+                stabilization: { // Stabilization for BarnesHut (can be shorter)
+                    enabled: true,
+                    iterations: 300
+                }
+            }
+        });
+        console.log("Switched to physics (BarnesHut) layout for individuals.");
+    });
 
+    // Helper to add nodes only if they don't exist
+    function addUniqueNodes(nodeArray) {
+        const nodesToAdd = nodeArray.filter(n => !nodes.get(n.id));
+        if (nodesToAdd.length > 0) {
+            nodes.add(nodesToAdd);
+        }
+        return nodesToAdd.length;
+    }
 
-    # --- _update_display remains the same ---
-    def _update_display(self):
-        print("Updating display...")
-        self._calculate_visualization_data() # Calculates based on detected datum_type
-        self._update_plot()
-        self._update_index_depth_table() # Now shows datum type info
-        self._update_blend_table()
-        print("Display update complete.")
+    // --- 5. Button Event Handlers ---
+    showDefect1Btn.onclick = function() {
+        console.log("Showing Defect 1 Data with initial positions...");
+        try {
+            // Prepare D1 nodes with calculated initial positions
+            const nodesWithPositions_D1 = nodes_D1.map((node, index) => {
+                const spacing = 100; // Horizontal spacing between initial nodes
+                const numNodes = nodes_D1.length;
+                // Calculate x position centered around calculatedStartX
+                const xPos = calculatedStartX + (index - (numNodes - 1) / 2) * spacing;
+                return {
+                    ...node, // Copy existing node properties
+                    x: xPos,
+                    y: calculatedStartY + (Math.random() * 40 - 20) // Add slight random y variation around the target Y
+                };
+            });
 
+            // Add the prepared nodes (use the helper, it filters correctly)
+            const addedNodesCount = addUniqueNodes(nodesWithPositions_D1);
+            console.log(`Added ${addedNodesCount} new nodes for Defect 1 with initial positions.`);
 
-    # --- Camera View Slot Methods & closeEvent (Remain the same) ---
-    def set_iso_view(self): self.plotter.camera_position = 'iso'; self.plotter.reset_camera(); self.plotter.render()
-    def set_xy_view(self): self.plotter.view_xy(); self.plotter.reset_camera(); self.plotter.render()
-    def set_yz_view(self): self.plotter.view_yz(); self.plotter.reset_camera(); self.plotter.render()
-    def set_xz_view(self): self.plotter.view_xz(); self.plotter.reset_camera(); self.plotter.render()
-    def closeEvent(self, event): print("Closing plotter..."); try: self.plotter.close(); except Exception as e: print(f"Error closing plotter: {e}"); super().closeEvent(event)
+            // Add edges for D1
+            edges.add(typeEdges_D1);
+            edges.add(relationEdges_D1);
 
-##############################################################################
-#                                Run Application
-##############################################################################
-if __name__ == "__main__":
-    if not graphdb_auth: print("Warning: GraphDB username/password not found in .env.")
-    app = QtWidgets.QApplication(sys.argv)
-    window = MainWindow()
-    window.show()
-    sys.exit(app.exec_())
+            showDefect1Btn.disabled = true;
+            showDefect2Btn.disabled = false; // Enable next stage
+
+            // No need for extra stabilize here, BarnesHut is running. Fit the view.
+            network.fit();
+
+        } catch (error) {
+             console.error("Error adding Defect 1 data:", error);
+         }
+    };
+
+    showDefect2Btn.onclick = function() {
+        console.log("Showing Defect 2 Data...");
+        try {
+            // Add D2 nodes WITHOUT predefined positions.
+            // The physics engine will place them relative to existing nodes.
+            const addedNodesCount = addUniqueNodes(nodes_D2);
+            edges.add(typeEdges_D2);
+            edges.add(relationEdges_D2);
+            console.log(`Added ${addedNodesCount} new nodes for Defect 2.`);
+
+            showDefect2Btn.disabled = true;
+            highlightQueryBtn.disabled = false; // Enable highlighting
+
+            // Maybe a brief stabilization helps settle the new nodes smoothly
+            network.stabilize(200);
+            network.fit(); // Fit view after adding D2
+
+        } catch (error) {
+             console.error("Error adding Defect 2 data:", error);
+         }
+    };
+
+    highlightQueryBtn.onclick = function() {
+        console.log("Highlighting Defect 2 Length Path...");
+        try {
+            // --- Reset Highlights (robust version) ---
+             const allNodeIds = nodes.getIds();
+             const nodeResets = allNodeIds.map(id => {
+                 const node = nodes.get(id);
+                 if (!node) return null;
+                 const groupColors = initialOptions.groups[node.group]?.color || {}; // Use initial options groups
+                 const defaultFill = groupColors.background || '#97C2FC';
+                 const defaultBorder = groupColors.border || '#2B7CE9';
+                 return {
+                     id: id, color: { background: defaultFill, border: defaultBorder },
+                     borderWidth: 2, font: { size: node.group === 'literal' ? 10 : 12, bold: false, color: 'black' }
+                 };
+             }).filter(u => u !== null);
+             if (nodeResets.length > 0) nodes.update(nodeResets);
+
+             const allEdgeIds = edges.getIds();
+             const edgeResets = allEdgeIds.map(id => {
+                 const edge = edges.get(id);
+                 if (!edge) return null;
+                 let originalColor = '#663399'; // Default relation
+                 if (edge.label === shorten('rdf:type')) originalColor = '#FF8C00'; // Type
+                 else if (edge.dashes) originalColor = 'darkgrey'; // Subclass
+                 return {
+                     id: id, color: { color: originalColor, highlight: originalColor, hover: originalColor },
+                     width: 1.5, arrows: { to: { enabled: true, scaleFactor: 1.0 } }
+                 };
+             }).filter(u => u !== null);
+             if (edgeResets.length > 0) edges.update(edgeResets);
+             console.log("Reset previous highlights.");
+
+             // --- Apply new highlights ---
+            const nodeUpdates = highlightNodeIds
+                .filter(id => nodes.get(id)) // Ensure node exists
+                .map(id => ({
+                    id: id, color: { background: 'salmon', border: 'red' }, borderWidth: 3,
+                    font: { size: 14, color: 'black', bold: true }
+                }));
+             if (nodeUpdates.length > 0) nodes.update(nodeUpdates);
+
+             const edgeUpdates = [];
+             const currentEdges = edges.get({ fields: ['id', 'from', 'to', 'label'] });
+             currentEdges.forEach(edge => {
+                 // Use shorten on the label definition for comparison consistency
+                 const isHighlight = highlightEdgeConnections.some(hc =>
+                     hc.from === edge.from && hc.to === edge.to && edge.label?.includes(shorten("pw:"+hc.label)) // Add pw: prefix for lookup
+                 );
+                  const isHighlightType = highlightEdgeConnections.some(hc =>
+                     hc.from === edge.from && hc.to === edge.to && edge.label?.includes(shorten("rdf:"+hc.label)) // Check rdf:type
+                 );
+
+                 if (isHighlight || isHighlightType) {
+                     edgeUpdates.push({
+                         id: edge.id, color: { color: 'red', highlight: 'darkred', hover: 'darkred' },
+                         width: 3, arrows: { to: { enabled: true, scaleFactor: 1.5 } }
+                     });
+                 }
+             });
+             if(edgeUpdates.length > 0) {
+                 edges.update(edgeUpdates);
+                 console.log(`Highlighted ${nodeUpdates.length} nodes and ${edgeUpdates.length} edges for Defect 2 Length.`);
+             } else {
+                 console.warn("No D2 Length edges found matching highlight criteria.");
+             }
+
+            highlightQueryBtn.disabled = true; // Disable after one click
+
+            // --- Optional: Show SPARQL Query ---
+            // if (sparqlCodeElement && sparqlQueryDisplayDiv) {
+            //      sparqlCodeElement.textContent = sparqlQueryDefect2Length.trim();
+            //      sparqlQueryDisplayDiv.style.display = 'block';
+            // }
+
+        } catch (error) {
+             console.error("Error highlighting query path:", error);
+         }
+    };
+
+</script>
+
+</body>
+</html>
