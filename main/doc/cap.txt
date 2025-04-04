@@ -1,1 +1,8 @@
 
+    Project Presentation Shared: Key findings and outcomes disseminated.
+
+    Replication Resources Provided: Ontology, KG data, source data & tutorials shared.
+
+    Core Ontologies Shared: REO, BFO, and related learning resources distributed.
+
+    Training Recordings Available: All sessions recorded and shared for on-demand access.
