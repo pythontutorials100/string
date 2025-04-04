@@ -1,1 +1,24 @@
 
+What We Achieved
+
+    Developed & Demonstrated an IBR Distress Ontology and Knowledge Graph for automated inspection use-cases.
+
+    Unified Data from diverse sources (relational databases, JSON, natural language) to enable seamless data integration.
+
+    Leveraged REO Ontology Patterns (our enterprise modeling best practices) to ensure scalability and consistency.
+
+    Trained 28 Team Members on ontology design, knowledge graph usage, query development, and data mapping.
+
+    Implemented Open-Source Tools for cost-effective, easy adoption across the organization.
+
+Why It Matters
+
+    Accelerated Decision-Making: Rapidly answer critical inspection and defect resolution questions.
+
+    Reduced Data Silos: A single integrated view enables quicker insights and consistent information sharing.
+
+    Strategic Positioning: Demonstrates feasibility for wider Air Force and corporate adoption of ontology-based solutions.
+
+    Organizational Readiness: Builds internal expertise, ensuring sustainable, long-term use of ontology and knowledge graphs.
+
+    Positive Stakeholder Reception: Early successes generate momentum for broader deployments and higher-impact initiatives.
