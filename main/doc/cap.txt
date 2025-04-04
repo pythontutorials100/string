@@ -1,1 +1,1 @@
-    We successfully piloted a Knowledge Graph using REO standards, proving we can effectively structure and integrate complex inspection data; this validates the approach for future expansion. This achievement serves as a vital springboard, de-risking larger initiatives and garnering significant stakeholder enthusiasm to leverage these technologies for improved Air Force automation and decision-making.
+
