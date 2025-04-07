@@ -1,1 +1,81 @@
+Slide 1: Proposed Research Thrust: Physics-Informed Ontological Reasoning for Heterogeneous Systems
 
+(Addressing MURI Topic 10: Ontology Engineering for Machine Learning in Open-ended Sensor, Model, User Systems)
+
+Alignment with MURI Objective: Our proposed research directly targets the MURI Topic 10 objective: "Create a flexible machine learning framework for embedding data, processes, models, and representations into a shared ontology for principled modeling and efficient communication under complex constraints."
+
+Our Core Proposed Idea (Developed in collaboration with Dr. JP): To develop an ontological framework that not only integrates heterogeneous sensor data but crucially incorporates physics-based reasoning and simulation capabilities, overcoming the limitations of current ontology reasoners for dynamic, continuous systems.
+
+Key Proposed Research Areas:
+
+    Ontologizing Heterogeneous Sensor Data for Physics-Based Analysis:
+
+        Challenge Tackled: Integrating diverse sensor inputs (e.g., video, radar) capturing physical phenomena (e.g., movement) where current methods fail due to modality/distribution differences (as highlighted in MURI Background).
+
+        Our Approach:
+
+            Develop novel semantic grounding techniques (relates to MURI Area 1) mapping sensor data to domain ontologies capturing spatio-temporal and physical properties (e.g., mass, velocity, constraints).
+
+            Utilize the resulting ontology for cross-sensor, physics-informed analysis (e.g., consistent gait analysis, trajectory prediction respecting kinematics).
+
+            Illustrative Scenario: Tracking an individual via ontological reasoning about physically plausible motion across sparse, heterogeneous camera views, enhancing robustness beyond appearance alone.
+
+        MURI Relevance: Addresses Areas (1) Semantic grounding, (2) Embedding domain ontologies, and (4) requiring new ML algorithms operating within this physics-aware ontological space.
+
+    Bridging Ontological Reasoning and Physics Solvers:
+
+        Challenge Tackled: The inability of standard ontology reasoners (FOL, DL) to handle continuous dynamics described by differential equations, which are essential for physics-based prediction and understanding (a gap implicit in the call for a flexible framework).
+
+        Our Approach:
+
+            Design formalisms to represent physical laws and system dynamics (e.g., differential equations) within or linked to the ontological structure.
+
+            Create mechanisms to couple external physics solvers/simulators with the ontology reasoner, enabling hybrid reasoning.
+
+            Develop query capabilities that leverage physical simulation (e.g., "Predict the state of System Y after time T given initial ontological state and known physical laws").
+
+        MURI Relevance: Directly advances the core Objective for a more flexible and principled modeling framework, significantly extending Area (5) Characterizing ontology components/properties and likely Area (4) with ML methods bridging symbolic and numerical computation.
+
+Expected Outcome: A unique ML-Ontology framework enabling deeper situational understanding and prediction in complex, open-ended systems by rigorously integrating semantic representation with quantitative physical modeling, directly addressing the needs outlined in MURI Topic 10.
+
+Slide 2: Understanding the Core Challenge of MURI Topic 10
+
+(Based on the Solicitation Text from Dr. John S. Hyatt, ARL)
+
+The Central Problem Identified in the MURI Solicitation:
+
+Systemic Fragmentation & Lack of Semantic Interoperability in Modern Distributed, Heterogeneous Systems.
+
+Breakdown of the Challenge (as described in the MURI text):
+
+    Heterogeneity Barrier: Current systems (like Federated Learning variants) struggle immensely when components (nodes, sensors, models) operate with:
+
+        Different data modalities (e.g., video vs. radar vs. text).
+
+        Data from different underlying distributions.
+
+        Requiring costly, slow, and error-prone "translation" layers.
+
+    Communication & Representation Deficiencies:
+
+        Communication is often limited, inefficient, and uses arbitrary formats.
+
+        Internal ML model representations are typically opaque, model-specific, and lack shared meaning ("poor semantic grounding").
+
+        There's no common ground for diverse components to share complex information effectively.
+
+    Inability to Handle Open-endedness: Systems are brittle when faced with incorporating new, previously unseen data types or sensor modalities.
+
+    Lack of a Unifying Framework: The solicitation highlights the absence of a principled way to:
+
+        Understand relationships between highly diverse representations.
+
+        Ground distinct models and data types in a shared conceptual space.
+
+        Optimize systems across multiple complex criteria (utility, robustness, etc.).
+
+        Enable reasoning analogous to human "mental models" that integrate diverse information sources based on underlying principles (causality, physics, logic).
+
+Consequences Outlined: High costs (power, time, bandwidth), slow system response/adaptation, inability to perform complex cross-modal reasoning, difficulty optimizing systems holistically, and lack of robustness.
+
+MURI Topic 10's Goal: To directly address this fundamental gap by funding research into an Ontology-centric Machine Learning framework designed to provide the necessary semantic foundation for interoperability, principled modeling, and efficient communication in these complex, open-ended systems.
