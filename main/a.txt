@@ -1,7 +1,1 @@
--Artificial Intelligence A Modern Approach 3'rd Edition by Russell & Norvig - Chapter 7 - 12 (Knowledge, Reasoning and Planning)
--Introduction to Logic 3'rd Edition, Genesereth & Kao
--Knowledge Representation and Reasoning by Brachman and Levesque
-
-------------------
-
 
