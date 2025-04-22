@@ -1,1 +1,24 @@
 
+"So, how did we solve this problem of disconnected data? Our goal was clear: get engineers the complete picture, faster. We needed a way to automatically connect those valuable data islands we saw earlier. Our solution, as shown on the slide, is centered around building a Knowledge Graph."
+
+"Think of this Knowledge Graph as a structured 'digital brain' specifically designed for airfoil inspection and repair. We built a smart data model – an ontology – that formally defines all the key elements: the airfoil parts, the defect types, the scan measurements, the specific FEA repair parameters, the rules... and crucially, it explicitly maps out the relationships between all these things. We essentially taught the 'brain' how everything connects."
+
+"To ensure this approach is robust and scalable, we aligned with enterprise standards by reusing modeling patterns from the RTX Enterprise Ontology (REO). 
+The power of this structure is that it allows us to automatically link and contextualize the different data pieces – the scans, the JSON, the rules, the models – creating that unified system that didn't exist before.
+
+Now, because all the data is connected and understood within this 'brain', what does that actually enable for the user? It means we can finally ask for the complete story of a defect and get an instant answer."
+
+"Let's look at the demo interface on the right. We load the 3D model. Then, using standard queries [like SPARQL] against the Knowledge Graph, we instantly pull all the relevant, linked information for a selected defect. You see the defect marked right on the model. And most importantly, look at the table: the detailed inspection measurements appear right alongside the specific FEA-calculated repair instructions – like fillet radius and blend length – for that exact defect. This is the unified, consumable view for the operator. Information that was previously scattered across different files and formats is now presented together, in context, delivering more comprehensive information, much faster."
+(Transition smoothly to Value)
+"This ability to instantly see the integrated picture delivers clear and significant value:"
+•	(Icon: Operator/Screen) Unified & Consumable Output: "First and foremost, it provides that unified, easily consumable information directly to the operator or engineer, right where they need it."
+•	(Icon: Speedometer) Faster, Integrated Insights: "This directly leads to faster analysis and insights, drastically cutting down the time that would have been spent manually hunting and piecing data together."
+•	(Icon: Checkmark/Target) Improved Accuracy & Consistency: "By using the ontology to formally link the correct data sources (like matching the right FEA result to the right defect), we minimize interpretation errors and improve consistency."
+•	
+•	(Icon: Gears/Interoperability) Foundation for Standardization: "Critically, structuring the data this way demonstrates a machine-readable format for describing airfoil distress and repair, paving the way for standardized data exchange and future digital thread capabilities."
+
+•	This approach was validated through positive feedback from both PW and Air Force stakeholders in joint reviews, and importantly, it secured approval for the next phase of the project."
+
+•	Finally, a key success was building internal capability. We successfully transferred knowledge by training 28 individuals at PW through five detailed sessions, sharing tutorials, use case data, and supporting files, empowering them to use and extend this work.
+
+
