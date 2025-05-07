@@ -1,1 +1,11 @@
-Ontology Language Support: Compliance with standards (RDFS, OWL 2 Profiles - EL, QL, RL, DL; SKOS, SHACL).
+Query Language Support & Performance:
+
+    Standard query languages (SPARQL 1.1 Query/Update, potentially GraphQL, Cypher, Gremlin depending on backend).
+
+    Query performance optimization features (indexing strategies, query planning).
+
+    Ability to handle complex graph traversals and pattern matching efficiently.
+
+    Support for federated queries across multiple endpoints/graphs.
+
+    Query building interfaces (visual or guided).
