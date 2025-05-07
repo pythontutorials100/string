@@ -1,1 +1,13 @@
+Orientation on Ontology & Knowledge Graph Capabilities at [Your Company]
 
+Hi [Name],
+
+I’m part of the team working on semantic technologies at [Your Company], with a focus on ontology development, formal logic, and inferencing using standards-based approaches. We support teams across business units in modeling domain knowledge, building knowledge graphs, and writing complex queries that drive insights and integration.
+
+We also maintain the company’s Enterprise Ontology, built on ISO standards, which serves as a foundation for consistent, interoperable data modeling.
+
+I’m reaching out to connect with teams working on data analytics, AI, or data integration initiatives. We’re hosting a short 30-minute orientation to introduce our current capabilities, share examples of how we’ve helped other teams, and explore how we might support your efforts.
+
+Would you be interested in joining?
+
+Best regards,
